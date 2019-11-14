@@ -1,5 +1,6 @@
 package base;
 
+import constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.utils.CloseableUtils;
@@ -14,15 +15,13 @@ import java.util.List;
 @Slf4j
 public class CRUD {
 
-    public static final String ZK_ADDRESS = "192.168.43.151:2181";
-
     /**
      * 检查节点是否存在
      */
     @Test
     public void checkNode(){
         //创建客户端
-        CuratorFramework client = ClientFactory.createSimple(ZK_ADDRESS);
+        CuratorFramework client = ClientFactory.createSimple(Constants.ZK_ADDRESS_1);
         try {
             //启动客户端实例，连接服务器
             client.start();
@@ -46,7 +45,7 @@ public class CRUD {
      */
     @Test
     public void createNode(){
-        CuratorFramework client = ClientFactory.createSimple(ZK_ADDRESS);
+        CuratorFramework client = ClientFactory.createSimple(Constants.ZK_ADDRESS_1);
         try {
             client.start();
             String data = "hello";
@@ -68,7 +67,7 @@ public class CRUD {
      */
     @Test
     public void createEphemeralNode(){
-        CuratorFramework client = ClientFactory.createSimple(ZK_ADDRESS);
+        CuratorFramework client = ClientFactory.createSimple(Constants.ZK_ADDRESS_1);
         try {
             client.start();
             String data = "hello";
@@ -94,7 +93,7 @@ public class CRUD {
      */
     @Test
     public void createPersistentSeqNode(){
-        CuratorFramework client = ClientFactory.createSimple(ZK_ADDRESS);
+        CuratorFramework client = ClientFactory.createSimple(Constants.ZK_ADDRESS_1);
         try {
             client.start();
             String data = "hello";
@@ -118,7 +117,7 @@ public class CRUD {
      */
     @Test
     public void readNode(){
-        CuratorFramework client = ClientFactory.createSimple(ZK_ADDRESS);
+        CuratorFramework client = ClientFactory.createSimple(Constants.ZK_ADDRESS_1);
         try {
             client.start();
             String zkPath = "/test/CRUD/node-1";
@@ -146,7 +145,7 @@ public class CRUD {
      */
     @Test
     public void updateNode(){
-        CuratorFramework client = ClientFactory.createSimple(ZK_ADDRESS);
+        CuratorFramework client = ClientFactory.createSimple(Constants.ZK_ADDRESS_1);
         try {
             client.start();
             String data = "hello world";
@@ -165,7 +164,7 @@ public class CRUD {
      */
     @Test
     public void updateNodeAsync(){
-        CuratorFramework client = ClientFactory.createSimple(ZK_ADDRESS);
+        CuratorFramework client = ClientFactory.createSimple(Constants.ZK_ADDRESS_1);
         try {
             AsyncCallback.StringCallback callback = new AsyncCallback.StringCallback() {
 
@@ -199,7 +198,7 @@ public class CRUD {
      */
     @Test
     public void deleteNode(){
-        CuratorFramework client = ClientFactory.createSimple(ZK_ADDRESS);
+        CuratorFramework client = ClientFactory.createSimple(Constants.ZK_ADDRESS_1);
         try {
             client.start();
             String zkPath = "/test/CRUD/node-seq-0000000007";
