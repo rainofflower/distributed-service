@@ -82,7 +82,9 @@ public class DistributedLock implements Lock {
                         //排序
                         Collections.sort(children);
 
-                        int ourIndex = children.indexOf(sequencePath);
+                        //int ourIndex = children.indexOf(sequencePath);
+                        //使用二分查找算法(需要满足有序、无重复元素)
+                        int ourIndex = Collections.binarySearch(children, sequencePath);
                         if(ourIndex == 0){
                             //如果当前争锁线程创建的节点位于所有子节点的第一位，则表示该线程成功获取到锁
                             hasTheLock = true;
