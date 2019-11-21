@@ -1,4 +1,4 @@
-package com.yanghui.distributed.redisson.config;
+package com.yanghui.distributed.redis.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;

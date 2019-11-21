@@ -44,7 +44,7 @@ public class RedissonLockTest {
                     //尝试加锁，最多等待 300 毫秒， 上锁后 30 毫秒 自动解锁
                     if(lock.tryLock(300, 30, TimeUnit.MILLISECONDS)){
                         try{
-                            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(30));
+                            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(20));
                             shareResource++;
                         }finally {
 //                            if(lock.isHeldByCurrentThread()){

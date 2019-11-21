@@ -1,4 +1,4 @@
-package com.yanghui.distributed.redisson.config;
+package com.yanghui.distributed.redis.config;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;
