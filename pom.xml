@@ -8,7 +8,8 @@
 		<module>redisson</module>
 		<module>rate-limit</module>
 		<module>redis-cluster</module>
-	</modules>
+        <module>rpc</module>
+    </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
