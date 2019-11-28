@@ -1,5 +1,7 @@
 package com.yanghui.distributed.rpc;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 服务提供者
  *
@@ -7,8 +9,12 @@ package com.yanghui.distributed.rpc;
  */
 public class EchoServiceImpl implements EchoService{
 
+    public static EchoService instance = new EchoServiceImpl();
+
+    private AtomicInteger id = new AtomicInteger(0);
+
     @Override
     public String echo(String ping) {
-        return ping != null ? ping + "--> I am ok." : "I am ok.";
+        return ping != null ? id.incrementAndGet() + ": " + ping + "--> I am ok." : id.incrementAndGet() + ": " + "I am ok.";
     }
 }

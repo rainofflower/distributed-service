@@ -24,7 +24,10 @@ import java.util.concurrent.Executors;
  */
 public class RpcExporter {
 
+    private static ServiceRegistry serviceRegistry = ServiceRegistry.instance;
+
     public static void exporter(String host, int port) throws Exception {
+        serviceRegistry.service.put(EchoService.class, EchoServiceImpl.instance);
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         ServerSocket serverSocket = new ServerSocket();
         serverSocket.bind(new InetSocketAddress(host, port));
@@ -57,7 +60,7 @@ public class RpcExporter {
                 Class<?>[] parameterTypes = (Class<?>[]) input.readObject();
                 Object[] parameters = (Object[]) input.readObject();
                 Method method = service.getMethod(methodName, parameterTypes);
-                Object result = method.invoke(service.newInstance(), parameters);
+                Object result = method.invoke(serviceRegistry.service.get(service), parameters);
                 output = new ObjectOutputStream(socket.getOutputStream());
                 output.writeObject(result);
             } catch (Exception e) {

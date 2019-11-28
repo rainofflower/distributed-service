@@ -18,7 +18,7 @@ import java.net.Socket;
 public class RpcImporter<T> {
 
     public T importer(final Class<?> serverClass, final InetSocketAddress address){
-        return (T) Proxy.newProxyInstance(serverClass.getClassLoader(), new Class<?>[]{serverClass.getInterfaces()[0]},
+        return (T) Proxy.newProxyInstance(serverClass.getClassLoader(), new Class<?>[]{serverClass},
             new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -29,7 +29,7 @@ public class RpcImporter<T> {
                         socket = new Socket();
                         socket.connect(address);
                         output = new ObjectOutputStream(socket.getOutputStream());
-                        output.writeUTF(serverClass.getName());
+                        output.writeUTF(method.getDeclaringClass().getName());
                         output.writeUTF(method.getName());
                         output.writeObject(method.getParameterTypes());
                         output.writeObject(args);

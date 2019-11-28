@@ -1,0 +1,31 @@
+syntax = "proto3";
+package com.yanghui.distributed.rpc.protocol.rainofflower;
+
+enum HeadType{
+    BIZ_REQUEST = 0;
+    BIZ_RESPONSE = 1;
+    BIZ_ONE_WAY = 2;
+    HANDSHAKE_REQUEST = 3;
+    HANDSHAKE_RESPONSE = 4;
+    HEART_BEAT_REQUEST = 5;
+    HEART_BEAT_RESPONSE = 6;
+}
+
+
+
+message Header{
+    HeadType type = 1;
+    bytes priority = 2;
+    string interfaceName = 3;
+    string methodName = 4;
+    map<string,string> attachment = 5;
+}
+
+message Body{
+    string content = 1;
+}
+
+message Message{
+    Header header = 1;
+    Body body = 2;
+}
