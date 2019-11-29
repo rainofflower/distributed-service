@@ -1,7 +1,10 @@
 package com.yanghui.distributed.rpc.codec;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.ProtocolStringList;
 import com.yanghui.distributed.rpc.common.RpcConstants;
+import com.yanghui.distributed.rpc.common.util.ClassTypeUtils;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,7 +34,16 @@ public class RainofflowerProtocolEncoder extends MessageToByteEncoder<Rainofflow
         out.writeShort(CRC_PREFIX);
         out.writeByte(MAJOR_VERSION);
         out.writeByte(MINOR_VERSION);
-
+//        if(msg.getHeader().getType().getNumber() == 0){
+//            //rpc请求消息
+//            Rainofflower.BizRequest bizRequest = msg.getBizRequest();
+//            List<Any> argsList = bizRequest.getArgsList();
+//            ProtocolStringList paramTypesList = bizRequest.getParamTypesList();
+//            for(String paramType : paramTypesList){
+//                Class clazz = ClassTypeUtils.getClass(paramType);
+//                argsList.get(0).
+//            }
+//        }
         byte[] bytes = msg.toByteArray();
         //除crcCode和length所有数据长度
         out.writeInt(bytes.length);

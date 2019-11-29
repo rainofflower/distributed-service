@@ -16,6 +16,7 @@
  */
 package com.yanghui.distributed.rpc.server;
 
+import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.exception.RpcRuntimeException;
 import com.yanghui.distributed.rpc.common.RpcConfigs;
 import com.yanghui.distributed.rpc.common.RpcOptions;
@@ -56,9 +57,10 @@ public final class ServerFactory {
             if (server == null) {
                 // 算下网卡和端口
                 resolveServerConfig(serverConfig);
-//                serverConfig.getProtocol();
-
-
+                String protocol = serverConfig.getProtocol();
+                if(protocol.equals(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)){
+                    server = new RpcServer();
+                }
                 server.init(serverConfig);
                 SERVER_MAP.put(serverConfig.getPort() + "", server);
             }

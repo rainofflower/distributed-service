@@ -1,6 +1,8 @@
 syntax = "proto3";
 package com.yanghui.distributed.rpc.protocol.rainofflower;
 
+import "google/protobuf/any.proto";
+
 enum HeadType{
     BIZ_REQUEST = 0;
     BIZ_RESPONSE = 1;
@@ -11,21 +13,28 @@ enum HeadType{
     HEART_BEAT_RESPONSE = 6;
 }
 
-
-
 message Header{
     HeadType type = 1;
-    bytes priority = 2;
-    string interfaceName = 3;
-    string methodName = 4;
-    map<string,string> attachment = 5;
+    uint32 priority = 2;
+    map<string,string> attachment = 3;
 }
 
-message Body{
-    string content = 1;
+message BizRequest{
+    string interfaceName = 1;
+    string methodName = 2;
+    repeated string paramTypes = 3;
+    //借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+    repeated string args = 4;
+}
+
+message BizResponse{
+    uint32 code = 1;
+    string info = 2;
+    string result = 3; //使用json存
 }
 
 message Message{
     Header header = 1;
-    Body body = 2;
+    BizRequest bizRequest = 2;
+    BizResponse bizResponse =3;
 }

@@ -67,11 +67,9 @@ public class CommandHandlerPipeline {
             }
         });
         tail = new Tail(this, new CommandHandler(){
-            public void handleCommand(CommandHandlerContext ctx, Object msg){
-                log.info("结果：{}",msg);
-            }
+            public void handleCommand(CommandHandlerContext ctx, Object msg){ }
             public void handleException(CommandHandlerContext ctx, Throwable throwable){
-                log.info("{} -> {}",ctx.getName(),throwable.toString());
+                log.info("tail捕获异常：{}",throwable);
             }
         });
         head.next = tail;
@@ -290,14 +288,14 @@ public class CommandHandlerPipeline {
         return this;
     }
 
-    static class Head extends CommandHandlerContext{
+    private static class Head extends CommandHandlerContext{
 
         Head(CommandHandlerPipeline pipeline, CommandHandler commandHandler) {
             super("CommandHandlerContext#head",pipeline, commandHandler);
         }
     }
 
-    static class Tail extends CommandHandlerContext{
+    private static class Tail extends CommandHandlerContext{
 
         Tail(CommandHandlerPipeline pipeline, CommandHandler commandHandler) {
             super("CommandHandlerContext#tail",pipeline, commandHandler);

@@ -1,14 +1,19 @@
 package com.yanghui.distributed.rpc.server;
 
+import com.yanghui.distributed.rpc.codec.RainofflowerProtocolDecoder;
 import com.yanghui.distributed.rpc.codec.RainofflowerProtocolEncoder;
+import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.common.struct.NamedThreadFactory;
 import com.yanghui.distributed.rpc.config.ServerConfig;
 import com.yanghui.distributed.rpc.server.handler.HeartBeatServerHandler;
+import com.yanghui.distributed.rpc.server.handler.RpcServerDispatchHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,23 +39,25 @@ public class RpcServer implements Server{
 
     protected EventLoopGroup workerGroup;
 
-    protected ThreadPoolExecutor defaultBizThreadPool;
+    protected ThreadPoolExecutor defaultDispatchThreadPool;
 
 
     @Override
     public void init(ServerConfig serverConfig) {
         this.serverConfig = serverConfig;
-        defaultBizThreadPool = new ThreadPoolExecutor(serverConfig.getCoreThreads(),
+        defaultDispatchThreadPool = new ThreadPoolExecutor(serverConfig.getCoreThreads(),
                 serverConfig.getMaxThreads(),
                 serverConfig.getAliveTime(),
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(serverConfig.getQueues()),
-                new NamedThreadFactory("default-biz-"+serverConfig.getPort())
+                new NamedThreadFactory("default-dispatch-"+serverConfig.getPort())
                 );
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup(serverConfig.getIoThreads());
-        bootstrap = new ServerBootstrap();
+        this.bootstrap = new ServerBootstrap();
+        final RpcServerDispatchHandler rpcDispatchHandler = new RpcServerDispatchHandler(defaultDispatchThreadPool);
         bootstrap.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.SO_BACKLOG, 100)
@@ -59,10 +66,14 @@ public class RpcServer implements Server{
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel channel) throws Exception {
-                        channel.pipeline()
-                                .addLast("decoder", new RainofflowerProtocolEncoder())
-                                .addLast("encoder",new RainofflowerProtocolEncoder())
-                                .addLast("heartBeatHandler", new HeartBeatServerHandler(serverConfig.getIdleTime()));
+                        ChannelPipeline pipeline = channel.pipeline();
+                        if(serverConfig.getProtocol().equals(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)){
+                            pipeline.addLast("encoder",new RainofflowerProtocolEncoder())
+                                    .addLast("decoder", new RainofflowerProtocolDecoder());
+                            channel.attr(Server.PROTOCOL).set(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER);
+                        }
+//                        pipeline.addLast("heartBeatHandler", new HeartBeatServerHandler(serverConfig.getIdleTime()))
+                        pipeline .addLast("rpcDispatchHandler",rpcDispatchHandler);
                         InetSocketAddress remoteAddress = channel.remoteAddress();
                         String key = remoteAddress.toString();
                         if(connections.containsKey(key)){
@@ -83,7 +94,19 @@ public class RpcServer implements Server{
 
     @Override
     public void start() throws InterruptedException {
-        this.channelFuture = this.bootstrap.bind(new InetSocketAddress("", 8000)).sync();
+        this.channelFuture = this.bootstrap.bind(new InetSocketAddress(serverConfig.getBoundHost(), serverConfig.getPort())).sync();
+    }
+
+    public void waitClose(){
+        try {
+            this.channelFuture.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }finally {
+            //优雅关闭EventLoopGroup，释放资源
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
     }
 
     @Override

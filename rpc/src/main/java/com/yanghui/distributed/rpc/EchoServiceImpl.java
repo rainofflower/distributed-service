@@ -17,4 +17,9 @@ public class EchoServiceImpl implements EchoService{
     public String echo(String ping) {
         return ping != null ? id.incrementAndGet() + ": " + ping + "--> I am ok." : id.incrementAndGet() + ": " + "I am ok.";
     }
+
+    @Override
+    public String friend(User user, int low, int high, String nick) {
+        return "返回信息："+ user.getName() + " | " + user.getAge() + " | " + low + " - " + high + " | "+nick;
+    }
 }

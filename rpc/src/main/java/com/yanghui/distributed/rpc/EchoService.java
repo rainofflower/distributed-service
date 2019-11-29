@@ -7,4 +7,6 @@ package com.yanghui.distributed.rpc;
 public interface EchoService {
 
     String echo(String ping);
+
+    String friend(User user, int low, int high, String nick);
 }

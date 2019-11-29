@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author YangHui
  */
 @Slf4j
-public class RainofflowerExceptionHandler extends CommandHandlerAdapter {
+public class RainofflowerRpcHandler extends CommandHandlerAdapter {
 
-    public void handleException(CommandHandlerContext ctx, Throwable throwable){
-        log.info("捕获异常，信息：{}",throwable);
-        ctx.fireHandleException(throwable);
+    public void handleCommand(CommandHandlerContext ctx, Object msg){
+        log.info("收到远程服务调用：{}",msg);
+        ctx.fireHandleCommand(msg);
     }
 }

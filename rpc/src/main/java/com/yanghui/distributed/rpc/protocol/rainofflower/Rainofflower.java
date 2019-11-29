@@ -179,41 +179,17 @@ public final class Rainofflower {
     com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.HeadType getType();
 
     /**
-     * <code>bytes priority = 2;</code>
+     * <code>uint32 priority = 2;</code>
      * @return The priority.
      */
-    com.google.protobuf.ByteString getPriority();
+    int getPriority();
 
     /**
-     * <code>string interfaceName = 3;</code>
-     * @return The interfaceName.
-     */
-    java.lang.String getInterfaceName();
-    /**
-     * <code>string interfaceName = 3;</code>
-     * @return The bytes for interfaceName.
-     */
-    com.google.protobuf.ByteString
-        getInterfaceNameBytes();
-
-    /**
-     * <code>string methodName = 4;</code>
-     * @return The methodName.
-     */
-    java.lang.String getMethodName();
-    /**
-     * <code>string methodName = 4;</code>
-     * @return The bytes for methodName.
-     */
-    com.google.protobuf.ByteString
-        getMethodNameBytes();
-
-    /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
     int getAttachmentCount();
     /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
     boolean containsAttachment(
         java.lang.String key);
@@ -224,19 +200,19 @@ public final class Rainofflower {
     java.util.Map<java.lang.String, java.lang.String>
     getAttachment();
     /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
     java.util.Map<java.lang.String, java.lang.String>
     getAttachmentMap();
     /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
 
     java.lang.String getAttachmentOrDefault(
         java.lang.String key,
         java.lang.String defaultValue);
     /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
 
     java.lang.String getAttachmentOrThrow(
@@ -256,9 +232,6 @@ public final class Rainofflower {
     }
     private Header() {
       type_ = 0;
-      priority_ = com.google.protobuf.ByteString.EMPTY;
-      interfaceName_ = "";
-      methodName_ = "";
     }
 
     @java.lang.Override
@@ -298,24 +271,12 @@ public final class Rainofflower {
               type_ = rawValue;
               break;
             }
-            case 18: {
+            case 16: {
 
-              priority_ = input.readBytes();
+              priority_ = input.readUInt32();
               break;
             }
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              interfaceName_ = s;
-              break;
-            }
-            case 34: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              methodName_ = s;
-              break;
-            }
-            case 42: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 attachment_ = com.google.protobuf.MapField.newMapField(
                     AttachmentDefaultEntryHolder.defaultEntry);
@@ -357,7 +318,7 @@ public final class Rainofflower {
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 5:
+        case 3:
           return internalGetAttachment();
         default:
           throw new RuntimeException(
@@ -392,88 +353,16 @@ public final class Rainofflower {
     }
 
     public static final int PRIORITY_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString priority_;
+    private int priority_;
     /**
-     * <code>bytes priority = 2;</code>
+     * <code>uint32 priority = 2;</code>
      * @return The priority.
      */
-    public com.google.protobuf.ByteString getPriority() {
+    public int getPriority() {
       return priority_;
     }
 
-    public static final int INTERFACENAME_FIELD_NUMBER = 3;
-    private volatile java.lang.Object interfaceName_;
-    /**
-     * <code>string interfaceName = 3;</code>
-     * @return The interfaceName.
-     */
-    public java.lang.String getInterfaceName() {
-      java.lang.Object ref = interfaceName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        interfaceName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string interfaceName = 3;</code>
-     * @return The bytes for interfaceName.
-     */
-    public com.google.protobuf.ByteString
-        getInterfaceNameBytes() {
-      java.lang.Object ref = interfaceName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        interfaceName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int METHODNAME_FIELD_NUMBER = 4;
-    private volatile java.lang.Object methodName_;
-    /**
-     * <code>string methodName = 4;</code>
-     * @return The methodName.
-     */
-    public java.lang.String getMethodName() {
-      java.lang.Object ref = methodName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        methodName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string methodName = 4;</code>
-     * @return The bytes for methodName.
-     */
-    public com.google.protobuf.ByteString
-        getMethodNameBytes() {
-      java.lang.Object ref = methodName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        methodName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int ATTACHMENT_FIELD_NUMBER = 5;
+    public static final int ATTACHMENT_FIELD_NUMBER = 3;
     private static final class AttachmentDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, java.lang.String> defaultEntry =
@@ -500,7 +389,7 @@ public final class Rainofflower {
       return internalGetAttachment().getMap().size();
     }
     /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
 
     public boolean containsAttachment(
@@ -516,14 +405,14 @@ public final class Rainofflower {
       return getAttachmentMap();
     }
     /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
 
     public java.util.Map<java.lang.String, java.lang.String> getAttachmentMap() {
       return internalGetAttachment().getMap();
     }
     /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
 
     public java.lang.String getAttachmentOrDefault(
@@ -535,7 +424,7 @@ public final class Rainofflower {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, string&gt; attachment = 5;</code>
+     * <code>map&lt;string, string&gt; attachment = 3;</code>
      */
 
     public java.lang.String getAttachmentOrThrow(
@@ -566,21 +455,15 @@ public final class Rainofflower {
       if (type_ != com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.HeadType.BIZ_REQUEST.getNumber()) {
         output.writeEnum(1, type_);
       }
-      if (!priority_.isEmpty()) {
-        output.writeBytes(2, priority_);
-      }
-      if (!getInterfaceNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, interfaceName_);
-      }
-      if (!getMethodNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, methodName_);
+      if (priority_ != 0) {
+        output.writeUInt32(2, priority_);
       }
       com.google.protobuf.GeneratedMessageV3
         .serializeStringMapTo(
           output,
           internalGetAttachment(),
           AttachmentDefaultEntryHolder.defaultEntry,
-          5);
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -594,15 +477,9 @@ public final class Rainofflower {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, type_);
       }
-      if (!priority_.isEmpty()) {
+      if (priority_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, priority_);
-      }
-      if (!getInterfaceNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, interfaceName_);
-      }
-      if (!getMethodNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, methodName_);
+          .computeUInt32Size(2, priority_);
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
            : internalGetAttachment().getMap().entrySet()) {
@@ -612,7 +489,7 @@ public final class Rainofflower {
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(5, attachment__);
+            .computeMessageSize(3, attachment__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -630,12 +507,8 @@ public final class Rainofflower {
       com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Header other = (com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Header) obj;
 
       if (type_ != other.type_) return false;
-      if (!getPriority()
-          .equals(other.getPriority())) return false;
-      if (!getInterfaceName()
-          .equals(other.getInterfaceName())) return false;
-      if (!getMethodName()
-          .equals(other.getMethodName())) return false;
+      if (getPriority()
+          != other.getPriority()) return false;
       if (!internalGetAttachment().equals(
           other.internalGetAttachment())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -652,11 +525,7 @@ public final class Rainofflower {
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
       hash = (37 * hash) + PRIORITY_FIELD_NUMBER;
-      hash = (53 * hash) + getPriority().hashCode();
-      hash = (37 * hash) + INTERFACENAME_FIELD_NUMBER;
-      hash = (53 * hash) + getInterfaceName().hashCode();
-      hash = (37 * hash) + METHODNAME_FIELD_NUMBER;
-      hash = (53 * hash) + getMethodName().hashCode();
+      hash = (53 * hash) + getPriority();
       if (!internalGetAttachment().getMap().isEmpty()) {
         hash = (37 * hash) + ATTACHMENT_FIELD_NUMBER;
         hash = (53 * hash) + internalGetAttachment().hashCode();
@@ -772,7 +641,7 @@ public final class Rainofflower {
       protected com.google.protobuf.MapField internalGetMapField(
           int number) {
         switch (number) {
-          case 5:
+          case 3:
             return internalGetAttachment();
           default:
             throw new RuntimeException(
@@ -783,7 +652,7 @@ public final class Rainofflower {
       protected com.google.protobuf.MapField internalGetMutableMapField(
           int number) {
         switch (number) {
-          case 5:
+          case 3:
             return internalGetMutableAttachment();
           default:
             throw new RuntimeException(
@@ -818,11 +687,7 @@ public final class Rainofflower {
         super.clear();
         type_ = 0;
 
-        priority_ = com.google.protobuf.ByteString.EMPTY;
-
-        interfaceName_ = "";
-
-        methodName_ = "";
+        priority_ = 0;
 
         internalGetMutableAttachment().clear();
         return this;
@@ -854,8 +719,6 @@ public final class Rainofflower {
         int from_bitField0_ = bitField0_;
         result.type_ = type_;
         result.priority_ = priority_;
-        result.interfaceName_ = interfaceName_;
-        result.methodName_ = methodName_;
         result.attachment_ = internalGetAttachment();
         result.attachment_.makeImmutable();
         onBuilt();
@@ -909,16 +772,8 @@ public final class Rainofflower {
         if (other.type_ != 0) {
           setTypeValue(other.getTypeValue());
         }
-        if (other.getPriority() != com.google.protobuf.ByteString.EMPTY) {
+        if (other.getPriority() != 0) {
           setPriority(other.getPriority());
-        }
-        if (!other.getInterfaceName().isEmpty()) {
-          interfaceName_ = other.interfaceName_;
-          onChanged();
-        }
-        if (!other.getMethodName().isEmpty()) {
-          methodName_ = other.methodName_;
-          onChanged();
         }
         internalGetMutableAttachment().mergeFrom(
             other.internalGetAttachment());
@@ -1004,187 +859,32 @@ public final class Rainofflower {
         return this;
       }
 
-      private com.google.protobuf.ByteString priority_ = com.google.protobuf.ByteString.EMPTY;
+      private int priority_ ;
       /**
-       * <code>bytes priority = 2;</code>
+       * <code>uint32 priority = 2;</code>
        * @return The priority.
        */
-      public com.google.protobuf.ByteString getPriority() {
+      public int getPriority() {
         return priority_;
       }
       /**
-       * <code>bytes priority = 2;</code>
+       * <code>uint32 priority = 2;</code>
        * @param value The priority to set.
        * @return This builder for chaining.
        */
-      public Builder setPriority(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      public Builder setPriority(int value) {
+        
         priority_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>bytes priority = 2;</code>
+       * <code>uint32 priority = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearPriority() {
         
-        priority_ = getDefaultInstance().getPriority();
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object interfaceName_ = "";
-      /**
-       * <code>string interfaceName = 3;</code>
-       * @return The interfaceName.
-       */
-      public java.lang.String getInterfaceName() {
-        java.lang.Object ref = interfaceName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          interfaceName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string interfaceName = 3;</code>
-       * @return The bytes for interfaceName.
-       */
-      public com.google.protobuf.ByteString
-          getInterfaceNameBytes() {
-        java.lang.Object ref = interfaceName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          interfaceName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string interfaceName = 3;</code>
-       * @param value The interfaceName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setInterfaceName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        interfaceName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string interfaceName = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearInterfaceName() {
-        
-        interfaceName_ = getDefaultInstance().getInterfaceName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string interfaceName = 3;</code>
-       * @param value The bytes for interfaceName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setInterfaceNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        interfaceName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object methodName_ = "";
-      /**
-       * <code>string methodName = 4;</code>
-       * @return The methodName.
-       */
-      public java.lang.String getMethodName() {
-        java.lang.Object ref = methodName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          methodName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string methodName = 4;</code>
-       * @return The bytes for methodName.
-       */
-      public com.google.protobuf.ByteString
-          getMethodNameBytes() {
-        java.lang.Object ref = methodName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          methodName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string methodName = 4;</code>
-       * @param value The methodName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMethodName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        methodName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string methodName = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearMethodName() {
-        
-        methodName_ = getDefaultInstance().getMethodName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string methodName = 4;</code>
-       * @param value The bytes for methodName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMethodNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        methodName_ = value;
+        priority_ = 0;
         onChanged();
         return this;
       }
@@ -1216,7 +916,7 @@ public final class Rainofflower {
         return internalGetAttachment().getMap().size();
       }
       /**
-       * <code>map&lt;string, string&gt; attachment = 5;</code>
+       * <code>map&lt;string, string&gt; attachment = 3;</code>
        */
 
       public boolean containsAttachment(
@@ -1232,14 +932,14 @@ public final class Rainofflower {
         return getAttachmentMap();
       }
       /**
-       * <code>map&lt;string, string&gt; attachment = 5;</code>
+       * <code>map&lt;string, string&gt; attachment = 3;</code>
        */
 
       public java.util.Map<java.lang.String, java.lang.String> getAttachmentMap() {
         return internalGetAttachment().getMap();
       }
       /**
-       * <code>map&lt;string, string&gt; attachment = 5;</code>
+       * <code>map&lt;string, string&gt; attachment = 3;</code>
        */
 
       public java.lang.String getAttachmentOrDefault(
@@ -1251,7 +951,7 @@ public final class Rainofflower {
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
-       * <code>map&lt;string, string&gt; attachment = 5;</code>
+       * <code>map&lt;string, string&gt; attachment = 3;</code>
        */
 
       public java.lang.String getAttachmentOrThrow(
@@ -1271,7 +971,7 @@ public final class Rainofflower {
         return this;
       }
       /**
-       * <code>map&lt;string, string&gt; attachment = 5;</code>
+       * <code>map&lt;string, string&gt; attachment = 3;</code>
        */
 
       public Builder removeAttachment(
@@ -1290,7 +990,7 @@ public final class Rainofflower {
         return internalGetMutableAttachment().getMutableMap();
       }
       /**
-       * <code>map&lt;string, string&gt; attachment = 5;</code>
+       * <code>map&lt;string, string&gt; attachment = 3;</code>
        */
       public Builder putAttachment(
           java.lang.String key,
@@ -1302,7 +1002,7 @@ public final class Rainofflower {
         return this;
       }
       /**
-       * <code>map&lt;string, string&gt; attachment = 5;</code>
+       * <code>map&lt;string, string&gt; attachment = 3;</code>
        */
 
       public Builder putAllAttachment(
@@ -1364,43 +1064,124 @@ public final class Rainofflower {
 
   }
 
-  public interface BodyOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.yanghui.distributed.rpc.protocol.rainofflower.Body)
+  public interface BizRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string content = 1;</code>
-     * @return The content.
+     * <code>string interfaceName = 1;</code>
+     * @return The interfaceName.
      */
-    java.lang.String getContent();
+    java.lang.String getInterfaceName();
     /**
-     * <code>string content = 1;</code>
-     * @return The bytes for content.
+     * <code>string interfaceName = 1;</code>
+     * @return The bytes for interfaceName.
      */
     com.google.protobuf.ByteString
-        getContentBytes();
+        getInterfaceNameBytes();
+
+    /**
+     * <code>string methodName = 2;</code>
+     * @return The methodName.
+     */
+    java.lang.String getMethodName();
+    /**
+     * <code>string methodName = 2;</code>
+     * @return The bytes for methodName.
+     */
+    com.google.protobuf.ByteString
+        getMethodNameBytes();
+
+    /**
+     * <code>repeated string paramTypes = 3;</code>
+     * @return A list containing the paramTypes.
+     */
+    java.util.List<java.lang.String>
+        getParamTypesList();
+    /**
+     * <code>repeated string paramTypes = 3;</code>
+     * @return The count of paramTypes.
+     */
+    int getParamTypesCount();
+    /**
+     * <code>repeated string paramTypes = 3;</code>
+     * @param index The index of the element to return.
+     * @return The paramTypes at the given index.
+     */
+    java.lang.String getParamTypes(int index);
+    /**
+     * <code>repeated string paramTypes = 3;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the paramTypes at the given index.
+     */
+    com.google.protobuf.ByteString
+        getParamTypesBytes(int index);
+
+    /**
+     * <pre>
+     *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+     * </pre>
+     *
+     * <code>repeated string args = 4;</code>
+     * @return A list containing the args.
+     */
+    java.util.List<java.lang.String>
+        getArgsList();
+    /**
+     * <pre>
+     *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+     * </pre>
+     *
+     * <code>repeated string args = 4;</code>
+     * @return The count of args.
+     */
+    int getArgsCount();
+    /**
+     * <pre>
+     *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+     * </pre>
+     *
+     * <code>repeated string args = 4;</code>
+     * @param index The index of the element to return.
+     * @return The args at the given index.
+     */
+    java.lang.String getArgs(int index);
+    /**
+     * <pre>
+     *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+     * </pre>
+     *
+     * <code>repeated string args = 4;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the args at the given index.
+     */
+    com.google.protobuf.ByteString
+        getArgsBytes(int index);
   }
   /**
-   * Protobuf type {@code com.yanghui.distributed.rpc.protocol.rainofflower.Body}
+   * Protobuf type {@code com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest}
    */
-  public  static final class Body extends
+  public  static final class BizRequest extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.yanghui.distributed.rpc.protocol.rainofflower.Body)
-      BodyOrBuilder {
+      // @@protoc_insertion_point(message_implements:com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest)
+      BizRequestOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use Body.newBuilder() to construct.
-    private Body(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use BizRequest.newBuilder() to construct.
+    private BizRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Body() {
-      content_ = "";
+    private BizRequest() {
+      interfaceName_ = "";
+      methodName_ = "";
+      paramTypes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      args_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new Body();
+      return new BizRequest();
     }
 
     @java.lang.Override
@@ -1408,7 +1189,7 @@ public final class Rainofflower {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private Body(
+    private BizRequest(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1416,6 +1197,7 @@ public final class Rainofflower {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -1429,7 +1211,31 @@ public final class Rainofflower {
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              content_ = s;
+              interfaceName_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              methodName_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                paramTypes_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              paramTypes_.add(s);
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                args_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              args_.add(s);
               break;
             }
             default: {
@@ -1447,57 +1253,185 @@ public final class Rainofflower {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          paramTypes_ = paramTypes_.getUnmodifiableView();
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          args_ = args_.getUnmodifiableView();
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_descriptor;
+      return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_fieldAccessorTable
+      return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.class, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.Builder.class);
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.class, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.Builder.class);
     }
 
-    public static final int CONTENT_FIELD_NUMBER = 1;
-    private volatile java.lang.Object content_;
+    public static final int INTERFACENAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object interfaceName_;
     /**
-     * <code>string content = 1;</code>
-     * @return The content.
+     * <code>string interfaceName = 1;</code>
+     * @return The interfaceName.
      */
-    public java.lang.String getContent() {
-      java.lang.Object ref = content_;
+    public java.lang.String getInterfaceName() {
+      java.lang.Object ref = interfaceName_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        content_ = s;
+        interfaceName_ = s;
         return s;
       }
     }
     /**
-     * <code>string content = 1;</code>
-     * @return The bytes for content.
+     * <code>string interfaceName = 1;</code>
+     * @return The bytes for interfaceName.
      */
     public com.google.protobuf.ByteString
-        getContentBytes() {
-      java.lang.Object ref = content_;
+        getInterfaceNameBytes() {
+      java.lang.Object ref = interfaceName_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        content_ = b;
+        interfaceName_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
+    }
+
+    public static final int METHODNAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object methodName_;
+    /**
+     * <code>string methodName = 2;</code>
+     * @return The methodName.
+     */
+    public java.lang.String getMethodName() {
+      java.lang.Object ref = methodName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        methodName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string methodName = 2;</code>
+     * @return The bytes for methodName.
+     */
+    public com.google.protobuf.ByteString
+        getMethodNameBytes() {
+      java.lang.Object ref = methodName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        methodName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PARAMTYPES_FIELD_NUMBER = 3;
+    private com.google.protobuf.LazyStringList paramTypes_;
+    /**
+     * <code>repeated string paramTypes = 3;</code>
+     * @return A list containing the paramTypes.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getParamTypesList() {
+      return paramTypes_;
+    }
+    /**
+     * <code>repeated string paramTypes = 3;</code>
+     * @return The count of paramTypes.
+     */
+    public int getParamTypesCount() {
+      return paramTypes_.size();
+    }
+    /**
+     * <code>repeated string paramTypes = 3;</code>
+     * @param index The index of the element to return.
+     * @return The paramTypes at the given index.
+     */
+    public java.lang.String getParamTypes(int index) {
+      return paramTypes_.get(index);
+    }
+    /**
+     * <code>repeated string paramTypes = 3;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the paramTypes at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getParamTypesBytes(int index) {
+      return paramTypes_.getByteString(index);
+    }
+
+    public static final int ARGS_FIELD_NUMBER = 4;
+    private com.google.protobuf.LazyStringList args_;
+    /**
+     * <pre>
+     *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+     * </pre>
+     *
+     * <code>repeated string args = 4;</code>
+     * @return A list containing the args.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getArgsList() {
+      return args_;
+    }
+    /**
+     * <pre>
+     *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+     * </pre>
+     *
+     * <code>repeated string args = 4;</code>
+     * @return The count of args.
+     */
+    public int getArgsCount() {
+      return args_.size();
+    }
+    /**
+     * <pre>
+     *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+     * </pre>
+     *
+     * <code>repeated string args = 4;</code>
+     * @param index The index of the element to return.
+     * @return The args at the given index.
+     */
+    public java.lang.String getArgs(int index) {
+      return args_.get(index);
+    }
+    /**
+     * <pre>
+     *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+     * </pre>
+     *
+     * <code>repeated string args = 4;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the args at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getArgsBytes(int index) {
+      return args_.getByteString(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1514,8 +1448,17 @@ public final class Rainofflower {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getContentBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, content_);
+      if (!getInterfaceNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, interfaceName_);
+      }
+      if (!getMethodNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, methodName_);
+      }
+      for (int i = 0; i < paramTypes_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, paramTypes_.getRaw(i));
+      }
+      for (int i = 0; i < args_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, args_.getRaw(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1526,8 +1469,27 @@ public final class Rainofflower {
       if (size != -1) return size;
 
       size = 0;
-      if (!getContentBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, content_);
+      if (!getInterfaceNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, interfaceName_);
+      }
+      if (!getMethodNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, methodName_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < paramTypes_.size(); i++) {
+          dataSize += computeStringSizeNoTag(paramTypes_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getParamTypesList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < args_.size(); i++) {
+          dataSize += computeStringSizeNoTag(args_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getArgsList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1539,13 +1501,19 @@ public final class Rainofflower {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body)) {
+      if (!(obj instanceof com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest)) {
         return super.equals(obj);
       }
-      com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body other = (com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body) obj;
+      com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest other = (com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest) obj;
 
-      if (!getContent()
-          .equals(other.getContent())) return false;
+      if (!getInterfaceName()
+          .equals(other.getInterfaceName())) return false;
+      if (!getMethodName()
+          .equals(other.getMethodName())) return false;
+      if (!getParamTypesList()
+          .equals(other.getParamTypesList())) return false;
+      if (!getArgsList()
+          .equals(other.getArgsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1557,76 +1525,86 @@ public final class Rainofflower {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
-      hash = (53 * hash) + getContent().hashCode();
+      hash = (37 * hash) + INTERFACENAME_FIELD_NUMBER;
+      hash = (53 * hash) + getInterfaceName().hashCode();
+      hash = (37 * hash) + METHODNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getMethodName().hashCode();
+      if (getParamTypesCount() > 0) {
+        hash = (37 * hash) + PARAMTYPES_FIELD_NUMBER;
+        hash = (53 * hash) + getParamTypesList().hashCode();
+      }
+      if (getArgsCount() > 0) {
+        hash = (37 * hash) + ARGS_FIELD_NUMBER;
+        hash = (53 * hash) + getArgsList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(byte[] data)
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(java.io.InputStream input)
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseDelimitedFrom(java.io.InputStream input)
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseDelimitedFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parseFrom(
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1639,7 +1617,7 @@ public final class Rainofflower {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body prototype) {
+    public static Builder newBuilder(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1655,26 +1633,26 @@ public final class Rainofflower {
       return builder;
     }
     /**
-     * Protobuf type {@code com.yanghui.distributed.rpc.protocol.rainofflower.Body}
+     * Protobuf type {@code com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.yanghui.distributed.rpc.protocol.rainofflower.Body)
-        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BodyOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest)
+        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_descriptor;
+        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_fieldAccessorTable
+        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.class, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.Builder.class);
+                com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.class, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.Builder.class);
       }
 
-      // Construct using com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.newBuilder()
+      // Construct using com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1692,25 +1670,31 @@ public final class Rainofflower {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        content_ = "";
+        interfaceName_ = "";
 
+        methodName_ = "";
+
+        paramTypes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        args_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_descriptor;
+        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_descriptor;
       }
 
       @java.lang.Override
-      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body getDefaultInstanceForType() {
-        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.getDefaultInstance();
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest getDefaultInstanceForType() {
+        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body build() {
-        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body result = buildPartial();
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest build() {
+        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1718,9 +1702,21 @@ public final class Rainofflower {
       }
 
       @java.lang.Override
-      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body buildPartial() {
-        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body result = new com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body(this);
-        result.content_ = content_;
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest buildPartial() {
+        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest result = new com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest(this);
+        int from_bitField0_ = bitField0_;
+        result.interfaceName_ = interfaceName_;
+        result.methodName_ = methodName_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          paramTypes_ = paramTypes_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.paramTypes_ = paramTypes_;
+        if (((bitField0_ & 0x00000002) != 0)) {
+          args_ = args_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.args_ = args_;
         onBuilt();
         return result;
       }
@@ -1759,18 +1755,42 @@ public final class Rainofflower {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body) {
-          return mergeFrom((com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body)other);
+        if (other instanceof com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest) {
+          return mergeFrom((com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body other) {
-        if (other == com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.getDefaultInstance()) return this;
-        if (!other.getContent().isEmpty()) {
-          content_ = other.content_;
+      public Builder mergeFrom(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest other) {
+        if (other == com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.getDefaultInstance()) return this;
+        if (!other.getInterfaceName().isEmpty()) {
+          interfaceName_ = other.interfaceName_;
+          onChanged();
+        }
+        if (!other.getMethodName().isEmpty()) {
+          methodName_ = other.methodName_;
+          onChanged();
+        }
+        if (!other.paramTypes_.isEmpty()) {
+          if (paramTypes_.isEmpty()) {
+            paramTypes_ = other.paramTypes_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureParamTypesIsMutable();
+            paramTypes_.addAll(other.paramTypes_);
+          }
+          onChanged();
+        }
+        if (!other.args_.isEmpty()) {
+          if (args_.isEmpty()) {
+            args_ = other.args_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureArgsIsMutable();
+            args_.addAll(other.args_);
+          }
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -1788,11 +1808,11 @@ public final class Rainofflower {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body parsedMessage = null;
+        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body) e.getUnfinishedMessage();
+          parsedMessage = (com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1801,79 +1821,412 @@ public final class Rainofflower {
         }
         return this;
       }
+      private int bitField0_;
 
-      private java.lang.Object content_ = "";
+      private java.lang.Object interfaceName_ = "";
       /**
-       * <code>string content = 1;</code>
-       * @return The content.
+       * <code>string interfaceName = 1;</code>
+       * @return The interfaceName.
        */
-      public java.lang.String getContent() {
-        java.lang.Object ref = content_;
+      public java.lang.String getInterfaceName() {
+        java.lang.Object ref = interfaceName_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          content_ = s;
+          interfaceName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>string content = 1;</code>
-       * @return The bytes for content.
+       * <code>string interfaceName = 1;</code>
+       * @return The bytes for interfaceName.
        */
       public com.google.protobuf.ByteString
-          getContentBytes() {
-        java.lang.Object ref = content_;
+          getInterfaceNameBytes() {
+        java.lang.Object ref = interfaceName_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          content_ = b;
+          interfaceName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>string content = 1;</code>
-       * @param value The content to set.
+       * <code>string interfaceName = 1;</code>
+       * @param value The interfaceName to set.
        * @return This builder for chaining.
        */
-      public Builder setContent(
+      public Builder setInterfaceName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        content_ = value;
+        interfaceName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>string content = 1;</code>
+       * <code>string interfaceName = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearContent() {
+      public Builder clearInterfaceName() {
         
-        content_ = getDefaultInstance().getContent();
+        interfaceName_ = getDefaultInstance().getInterfaceName();
         onChanged();
         return this;
       }
       /**
-       * <code>string content = 1;</code>
-       * @param value The bytes for content to set.
+       * <code>string interfaceName = 1;</code>
+       * @param value The bytes for interfaceName to set.
        * @return This builder for chaining.
        */
-      public Builder setContentBytes(
+      public Builder setInterfaceNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
         
-        content_ = value;
+        interfaceName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object methodName_ = "";
+      /**
+       * <code>string methodName = 2;</code>
+       * @return The methodName.
+       */
+      public java.lang.String getMethodName() {
+        java.lang.Object ref = methodName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          methodName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string methodName = 2;</code>
+       * @return The bytes for methodName.
+       */
+      public com.google.protobuf.ByteString
+          getMethodNameBytes() {
+        java.lang.Object ref = methodName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          methodName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string methodName = 2;</code>
+       * @param value The methodName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMethodName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        methodName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string methodName = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMethodName() {
+        
+        methodName_ = getDefaultInstance().getMethodName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string methodName = 2;</code>
+       * @param value The bytes for methodName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMethodNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        methodName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList paramTypes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureParamTypesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          paramTypes_ = new com.google.protobuf.LazyStringArrayList(paramTypes_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @return A list containing the paramTypes.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getParamTypesList() {
+        return paramTypes_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @return The count of paramTypes.
+       */
+      public int getParamTypesCount() {
+        return paramTypes_.size();
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @param index The index of the element to return.
+       * @return The paramTypes at the given index.
+       */
+      public java.lang.String getParamTypes(int index) {
+        return paramTypes_.get(index);
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the paramTypes at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getParamTypesBytes(int index) {
+        return paramTypes_.getByteString(index);
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The paramTypes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setParamTypes(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureParamTypesIsMutable();
+        paramTypes_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @param value The paramTypes to add.
+       * @return This builder for chaining.
+       */
+      public Builder addParamTypes(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureParamTypesIsMutable();
+        paramTypes_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @param values The paramTypes to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllParamTypes(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureParamTypesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, paramTypes_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearParamTypes() {
+        paramTypes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string paramTypes = 3;</code>
+       * @param value The bytes of the paramTypes to add.
+       * @return This builder for chaining.
+       */
+      public Builder addParamTypesBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureParamTypesIsMutable();
+        paramTypes_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList args_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureArgsIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          args_ = new com.google.protobuf.LazyStringArrayList(args_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @return A list containing the args.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getArgsList() {
+        return args_.getUnmodifiableView();
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @return The count of args.
+       */
+      public int getArgsCount() {
+        return args_.size();
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @param index The index of the element to return.
+       * @return The args at the given index.
+       */
+      public java.lang.String getArgs(int index) {
+        return args_.get(index);
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the args at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getArgsBytes(int index) {
+        return args_.getByteString(index);
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @param index The index to set the value at.
+       * @param value The args to set.
+       * @return This builder for chaining.
+       */
+      public Builder setArgs(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureArgsIsMutable();
+        args_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @param value The args to add.
+       * @return This builder for chaining.
+       */
+      public Builder addArgs(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureArgsIsMutable();
+        args_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @param values The args to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllArgs(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureArgsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, args_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearArgs() {
+        args_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *借助json序列化参数列表（由于protobuf解析对象需要继承com.google.protobuf.Message，有较大限制）
+       * </pre>
+       *
+       * <code>repeated string args = 4;</code>
+       * @param value The bytes of the args to add.
+       * @return This builder for chaining.
+       */
+      public Builder addArgsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureArgsIsMutable();
+        args_.add(value);
         onChanged();
         return this;
       }
@@ -1890,41 +2243,859 @@ public final class Rainofflower {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.yanghui.distributed.rpc.protocol.rainofflower.Body)
+      // @@protoc_insertion_point(builder_scope:com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest)
     }
 
-    // @@protoc_insertion_point(class_scope:com.yanghui.distributed.rpc.protocol.rainofflower.Body)
-    private static final com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest)
+    private static final com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body();
+      DEFAULT_INSTANCE = new com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest();
     }
 
-    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body getDefaultInstance() {
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<Body>
-        PARSER = new com.google.protobuf.AbstractParser<Body>() {
+    private static final com.google.protobuf.Parser<BizRequest>
+        PARSER = new com.google.protobuf.AbstractParser<BizRequest>() {
       @java.lang.Override
-      public Body parsePartialFrom(
+      public BizRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Body(input, extensionRegistry);
+        return new BizRequest(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<Body> parser() {
+    public static com.google.protobuf.Parser<BizRequest> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<Body> getParserForType() {
+    public com.google.protobuf.Parser<BizRequest> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body getDefaultInstanceForType() {
+    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BizResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint32 code = 1;</code>
+     * @return The code.
+     */
+    int getCode();
+
+    /**
+     * <code>string info = 2;</code>
+     * @return The info.
+     */
+    java.lang.String getInfo();
+    /**
+     * <code>string info = 2;</code>
+     * @return The bytes for info.
+     */
+    com.google.protobuf.ByteString
+        getInfoBytes();
+
+    /**
+     * <pre>
+     *使用json存
+     * </pre>
+     *
+     * <code>string result = 3;</code>
+     * @return The result.
+     */
+    java.lang.String getResult();
+    /**
+     * <pre>
+     *使用json存
+     * </pre>
+     *
+     * <code>string result = 3;</code>
+     * @return The bytes for result.
+     */
+    com.google.protobuf.ByteString
+        getResultBytes();
+  }
+  /**
+   * Protobuf type {@code com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse}
+   */
+  public  static final class BizResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse)
+      BizResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BizResponse.newBuilder() to construct.
+    private BizResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BizResponse() {
+      info_ = "";
+      result_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BizResponse();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BizResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              code_ = input.readUInt32();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              info_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              result_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.class, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.Builder.class);
+    }
+
+    public static final int CODE_FIELD_NUMBER = 1;
+    private int code_;
+    /**
+     * <code>uint32 code = 1;</code>
+     * @return The code.
+     */
+    public int getCode() {
+      return code_;
+    }
+
+    public static final int INFO_FIELD_NUMBER = 2;
+    private volatile java.lang.Object info_;
+    /**
+     * <code>string info = 2;</code>
+     * @return The info.
+     */
+    public java.lang.String getInfo() {
+      java.lang.Object ref = info_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        info_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string info = 2;</code>
+     * @return The bytes for info.
+     */
+    public com.google.protobuf.ByteString
+        getInfoBytes() {
+      java.lang.Object ref = info_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        info_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 3;
+    private volatile java.lang.Object result_;
+    /**
+     * <pre>
+     *使用json存
+     * </pre>
+     *
+     * <code>string result = 3;</code>
+     * @return The result.
+     */
+    public java.lang.String getResult() {
+      java.lang.Object ref = result_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        result_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *使用json存
+     * </pre>
+     *
+     * <code>string result = 3;</code>
+     * @return The bytes for result.
+     */
+    public com.google.protobuf.ByteString
+        getResultBytes() {
+      java.lang.Object ref = result_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        result_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (code_ != 0) {
+        output.writeUInt32(1, code_);
+      }
+      if (!getInfoBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, info_);
+      }
+      if (!getResultBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, result_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (code_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, code_);
+      }
+      if (!getInfoBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, info_);
+      }
+      if (!getResultBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, result_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse)) {
+        return super.equals(obj);
+      }
+      com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse other = (com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse) obj;
+
+      if (getCode()
+          != other.getCode()) return false;
+      if (!getInfo()
+          .equals(other.getInfo())) return false;
+      if (!getResult()
+          .equals(other.getResult())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CODE_FIELD_NUMBER;
+      hash = (53 * hash) + getCode();
+      hash = (37 * hash) + INFO_FIELD_NUMBER;
+      hash = (53 * hash) + getInfo().hashCode();
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + getResult().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse)
+        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.class, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.Builder.class);
+      }
+
+      // Construct using com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        code_ = 0;
+
+        info_ = "";
+
+        result_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse getDefaultInstanceForType() {
+        return com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse build() {
+        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse buildPartial() {
+        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse result = new com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse(this);
+        result.code_ = code_;
+        result.info_ = info_;
+        result.result_ = result_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse) {
+          return mergeFrom((com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse other) {
+        if (other == com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.getDefaultInstance()) return this;
+        if (other.getCode() != 0) {
+          setCode(other.getCode());
+        }
+        if (!other.getInfo().isEmpty()) {
+          info_ = other.info_;
+          onChanged();
+        }
+        if (!other.getResult().isEmpty()) {
+          result_ = other.result_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int code_ ;
+      /**
+       * <code>uint32 code = 1;</code>
+       * @return The code.
+       */
+      public int getCode() {
+        return code_;
+      }
+      /**
+       * <code>uint32 code = 1;</code>
+       * @param value The code to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCode(int value) {
+        
+        code_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 code = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCode() {
+        
+        code_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object info_ = "";
+      /**
+       * <code>string info = 2;</code>
+       * @return The info.
+       */
+      public java.lang.String getInfo() {
+        java.lang.Object ref = info_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          info_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string info = 2;</code>
+       * @return The bytes for info.
+       */
+      public com.google.protobuf.ByteString
+          getInfoBytes() {
+        java.lang.Object ref = info_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          info_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string info = 2;</code>
+       * @param value The info to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInfo(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        info_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string info = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearInfo() {
+        
+        info_ = getDefaultInstance().getInfo();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string info = 2;</code>
+       * @param value The bytes for info to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInfoBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        info_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object result_ = "";
+      /**
+       * <pre>
+       *使用json存
+       * </pre>
+       *
+       * <code>string result = 3;</code>
+       * @return The result.
+       */
+      public java.lang.String getResult() {
+        java.lang.Object ref = result_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          result_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *使用json存
+       * </pre>
+       *
+       * <code>string result = 3;</code>
+       * @return The bytes for result.
+       */
+      public com.google.protobuf.ByteString
+          getResultBytes() {
+        java.lang.Object ref = result_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          result_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *使用json存
+       * </pre>
+       *
+       * <code>string result = 3;</code>
+       * @param value The result to set.
+       * @return This builder for chaining.
+       */
+      public Builder setResult(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *使用json存
+       * </pre>
+       *
+       * <code>string result = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearResult() {
+        
+        result_ = getDefaultInstance().getResult();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *使用json存
+       * </pre>
+       *
+       * <code>string result = 3;</code>
+       * @param value The bytes for result to set.
+       * @return This builder for chaining.
+       */
+      public Builder setResultBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse)
+    private static final com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse();
+    }
+
+    public static com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BizResponse>
+        PARSER = new com.google.protobuf.AbstractParser<BizResponse>() {
+      @java.lang.Override
+      public BizResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BizResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BizResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BizResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1950,19 +3121,34 @@ public final class Rainofflower {
     com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.HeaderOrBuilder getHeaderOrBuilder();
 
     /**
-     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
-     * @return Whether the body field is set.
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
+     * @return Whether the bizRequest field is set.
      */
-    boolean hasBody();
+    boolean hasBizRequest();
     /**
-     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
-     * @return The body.
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
+     * @return The bizRequest.
      */
-    com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body getBody();
+    com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest getBizRequest();
     /**
-     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
      */
-    com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BodyOrBuilder getBodyOrBuilder();
+    com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequestOrBuilder getBizRequestOrBuilder();
+
+    /**
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+     * @return Whether the bizResponse field is set.
+     */
+    boolean hasBizResponse();
+    /**
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+     * @return The bizResponse.
+     */
+    com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse getBizResponse();
+    /**
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+     */
+    com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponseOrBuilder getBizResponseOrBuilder();
   }
   /**
    * Protobuf type {@code com.yanghui.distributed.rpc.protocol.rainofflower.Message}
@@ -2023,14 +3209,27 @@ public final class Rainofflower {
               break;
             }
             case 18: {
-              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.Builder subBuilder = null;
-              if (body_ != null) {
-                subBuilder = body_.toBuilder();
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.Builder subBuilder = null;
+              if (bizRequest_ != null) {
+                subBuilder = bizRequest_.toBuilder();
               }
-              body_ = input.readMessage(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.parser(), extensionRegistry);
+              bizRequest_ = input.readMessage(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(body_);
-                body_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(bizRequest_);
+                bizRequest_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.Builder subBuilder = null;
+              if (bizResponse_ != null) {
+                subBuilder = bizResponse_.toBuilder();
+              }
+              bizResponse_ = input.readMessage(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(bizResponse_);
+                bizResponse_ = subBuilder.buildPartial();
               }
 
               break;
@@ -2090,27 +3289,50 @@ public final class Rainofflower {
       return getHeader();
     }
 
-    public static final int BODY_FIELD_NUMBER = 2;
-    private com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body body_;
+    public static final int BIZREQUEST_FIELD_NUMBER = 2;
+    private com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest bizRequest_;
     /**
-     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
-     * @return Whether the body field is set.
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
+     * @return Whether the bizRequest field is set.
      */
-    public boolean hasBody() {
-      return body_ != null;
+    public boolean hasBizRequest() {
+      return bizRequest_ != null;
     }
     /**
-     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
-     * @return The body.
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
+     * @return The bizRequest.
      */
-    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body getBody() {
-      return body_ == null ? com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.getDefaultInstance() : body_;
+    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest getBizRequest() {
+      return bizRequest_ == null ? com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.getDefaultInstance() : bizRequest_;
     }
     /**
-     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
      */
-    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BodyOrBuilder getBodyOrBuilder() {
-      return getBody();
+    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequestOrBuilder getBizRequestOrBuilder() {
+      return getBizRequest();
+    }
+
+    public static final int BIZRESPONSE_FIELD_NUMBER = 3;
+    private com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse bizResponse_;
+    /**
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+     * @return Whether the bizResponse field is set.
+     */
+    public boolean hasBizResponse() {
+      return bizResponse_ != null;
+    }
+    /**
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+     * @return The bizResponse.
+     */
+    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse getBizResponse() {
+      return bizResponse_ == null ? com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.getDefaultInstance() : bizResponse_;
+    }
+    /**
+     * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+     */
+    public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponseOrBuilder getBizResponseOrBuilder() {
+      return getBizResponse();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2130,8 +3352,11 @@ public final class Rainofflower {
       if (header_ != null) {
         output.writeMessage(1, getHeader());
       }
-      if (body_ != null) {
-        output.writeMessage(2, getBody());
+      if (bizRequest_ != null) {
+        output.writeMessage(2, getBizRequest());
+      }
+      if (bizResponse_ != null) {
+        output.writeMessage(3, getBizResponse());
       }
       unknownFields.writeTo(output);
     }
@@ -2146,9 +3371,13 @@ public final class Rainofflower {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getHeader());
       }
-      if (body_ != null) {
+      if (bizRequest_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getBody());
+          .computeMessageSize(2, getBizRequest());
+      }
+      if (bizResponse_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getBizResponse());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2170,10 +3399,15 @@ public final class Rainofflower {
         if (!getHeader()
             .equals(other.getHeader())) return false;
       }
-      if (hasBody() != other.hasBody()) return false;
-      if (hasBody()) {
-        if (!getBody()
-            .equals(other.getBody())) return false;
+      if (hasBizRequest() != other.hasBizRequest()) return false;
+      if (hasBizRequest()) {
+        if (!getBizRequest()
+            .equals(other.getBizRequest())) return false;
+      }
+      if (hasBizResponse() != other.hasBizResponse()) return false;
+      if (hasBizResponse()) {
+        if (!getBizResponse()
+            .equals(other.getBizResponse())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -2190,9 +3424,13 @@ public final class Rainofflower {
         hash = (37 * hash) + HEADER_FIELD_NUMBER;
         hash = (53 * hash) + getHeader().hashCode();
       }
-      if (hasBody()) {
-        hash = (37 * hash) + BODY_FIELD_NUMBER;
-        hash = (53 * hash) + getBody().hashCode();
+      if (hasBizRequest()) {
+        hash = (37 * hash) + BIZREQUEST_FIELD_NUMBER;
+        hash = (53 * hash) + getBizRequest().hashCode();
+      }
+      if (hasBizResponse()) {
+        hash = (37 * hash) + BIZRESPONSE_FIELD_NUMBER;
+        hash = (53 * hash) + getBizResponse().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -2333,11 +3571,17 @@ public final class Rainofflower {
           header_ = null;
           headerBuilder_ = null;
         }
-        if (bodyBuilder_ == null) {
-          body_ = null;
+        if (bizRequestBuilder_ == null) {
+          bizRequest_ = null;
         } else {
-          body_ = null;
-          bodyBuilder_ = null;
+          bizRequest_ = null;
+          bizRequestBuilder_ = null;
+        }
+        if (bizResponseBuilder_ == null) {
+          bizResponse_ = null;
+        } else {
+          bizResponse_ = null;
+          bizResponseBuilder_ = null;
         }
         return this;
       }
@@ -2370,10 +3614,15 @@ public final class Rainofflower {
         } else {
           result.header_ = headerBuilder_.build();
         }
-        if (bodyBuilder_ == null) {
-          result.body_ = body_;
+        if (bizRequestBuilder_ == null) {
+          result.bizRequest_ = bizRequest_;
         } else {
-          result.body_ = bodyBuilder_.build();
+          result.bizRequest_ = bizRequestBuilder_.build();
+        }
+        if (bizResponseBuilder_ == null) {
+          result.bizResponse_ = bizResponse_;
+        } else {
+          result.bizResponse_ = bizResponseBuilder_.build();
         }
         onBuilt();
         return result;
@@ -2426,8 +3675,11 @@ public final class Rainofflower {
         if (other.hasHeader()) {
           mergeHeader(other.getHeader());
         }
-        if (other.hasBody()) {
-          mergeBody(other.getBody());
+        if (other.hasBizRequest()) {
+          mergeBizRequest(other.getBizRequest());
+        }
+        if (other.hasBizResponse()) {
+          mergeBizResponse(other.getBizResponse());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2577,123 +3829,242 @@ public final class Rainofflower {
         return headerBuilder_;
       }
 
-      private com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body body_;
+      private com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest bizRequest_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BodyOrBuilder> bodyBuilder_;
+          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequestOrBuilder> bizRequestBuilder_;
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
-       * @return Whether the body field is set.
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
+       * @return Whether the bizRequest field is set.
        */
-      public boolean hasBody() {
-        return bodyBuilder_ != null || body_ != null;
+      public boolean hasBizRequest() {
+        return bizRequestBuilder_ != null || bizRequest_ != null;
       }
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
-       * @return The body.
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
+       * @return The bizRequest.
        */
-      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body getBody() {
-        if (bodyBuilder_ == null) {
-          return body_ == null ? com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.getDefaultInstance() : body_;
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest getBizRequest() {
+        if (bizRequestBuilder_ == null) {
+          return bizRequest_ == null ? com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.getDefaultInstance() : bizRequest_;
         } else {
-          return bodyBuilder_.getMessage();
+          return bizRequestBuilder_.getMessage();
         }
       }
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
        */
-      public Builder setBody(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body value) {
-        if (bodyBuilder_ == null) {
+      public Builder setBizRequest(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest value) {
+        if (bizRequestBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          body_ = value;
+          bizRequest_ = value;
           onChanged();
         } else {
-          bodyBuilder_.setMessage(value);
+          bizRequestBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
        */
-      public Builder setBody(
-          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.Builder builderForValue) {
-        if (bodyBuilder_ == null) {
-          body_ = builderForValue.build();
+      public Builder setBizRequest(
+          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.Builder builderForValue) {
+        if (bizRequestBuilder_ == null) {
+          bizRequest_ = builderForValue.build();
           onChanged();
         } else {
-          bodyBuilder_.setMessage(builderForValue.build());
+          bizRequestBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
        */
-      public Builder mergeBody(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body value) {
-        if (bodyBuilder_ == null) {
-          if (body_ != null) {
-            body_ =
-              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.newBuilder(body_).mergeFrom(value).buildPartial();
+      public Builder mergeBizRequest(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest value) {
+        if (bizRequestBuilder_ == null) {
+          if (bizRequest_ != null) {
+            bizRequest_ =
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.newBuilder(bizRequest_).mergeFrom(value).buildPartial();
           } else {
-            body_ = value;
+            bizRequest_ = value;
           }
           onChanged();
         } else {
-          bodyBuilder_.mergeFrom(value);
+          bizRequestBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
        */
-      public Builder clearBody() {
-        if (bodyBuilder_ == null) {
-          body_ = null;
+      public Builder clearBizRequest() {
+        if (bizRequestBuilder_ == null) {
+          bizRequest_ = null;
           onChanged();
         } else {
-          body_ = null;
-          bodyBuilder_ = null;
+          bizRequest_ = null;
+          bizRequestBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
        */
-      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.Builder getBodyBuilder() {
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.Builder getBizRequestBuilder() {
         
         onChanged();
-        return getBodyFieldBuilder().getBuilder();
+        return getBizRequestFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
        */
-      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BodyOrBuilder getBodyOrBuilder() {
-        if (bodyBuilder_ != null) {
-          return bodyBuilder_.getMessageOrBuilder();
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequestOrBuilder getBizRequestOrBuilder() {
+        if (bizRequestBuilder_ != null) {
+          return bizRequestBuilder_.getMessageOrBuilder();
         } else {
-          return body_ == null ?
-              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.getDefaultInstance() : body_;
+          return bizRequest_ == null ?
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.getDefaultInstance() : bizRequest_;
         }
       }
       /**
-       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.Body body = 2;</code>
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizRequest bizRequest = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BodyOrBuilder> 
-          getBodyFieldBuilder() {
-        if (bodyBuilder_ == null) {
-          bodyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.Body.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BodyOrBuilder>(
-                  getBody(),
+          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequestOrBuilder> 
+          getBizRequestFieldBuilder() {
+        if (bizRequestBuilder_ == null) {
+          bizRequestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequest.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizRequestOrBuilder>(
+                  getBizRequest(),
                   getParentForChildren(),
                   isClean());
-          body_ = null;
+          bizRequest_ = null;
         }
-        return bodyBuilder_;
+        return bizRequestBuilder_;
+      }
+
+      private com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse bizResponse_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponseOrBuilder> bizResponseBuilder_;
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       * @return Whether the bizResponse field is set.
+       */
+      public boolean hasBizResponse() {
+        return bizResponseBuilder_ != null || bizResponse_ != null;
+      }
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       * @return The bizResponse.
+       */
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse getBizResponse() {
+        if (bizResponseBuilder_ == null) {
+          return bizResponse_ == null ? com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.getDefaultInstance() : bizResponse_;
+        } else {
+          return bizResponseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       */
+      public Builder setBizResponse(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse value) {
+        if (bizResponseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bizResponse_ = value;
+          onChanged();
+        } else {
+          bizResponseBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       */
+      public Builder setBizResponse(
+          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.Builder builderForValue) {
+        if (bizResponseBuilder_ == null) {
+          bizResponse_ = builderForValue.build();
+          onChanged();
+        } else {
+          bizResponseBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       */
+      public Builder mergeBizResponse(com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse value) {
+        if (bizResponseBuilder_ == null) {
+          if (bizResponse_ != null) {
+            bizResponse_ =
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.newBuilder(bizResponse_).mergeFrom(value).buildPartial();
+          } else {
+            bizResponse_ = value;
+          }
+          onChanged();
+        } else {
+          bizResponseBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       */
+      public Builder clearBizResponse() {
+        if (bizResponseBuilder_ == null) {
+          bizResponse_ = null;
+          onChanged();
+        } else {
+          bizResponse_ = null;
+          bizResponseBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       */
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.Builder getBizResponseBuilder() {
+        
+        onChanged();
+        return getBizResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       */
+      public com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponseOrBuilder getBizResponseOrBuilder() {
+        if (bizResponseBuilder_ != null) {
+          return bizResponseBuilder_.getMessageOrBuilder();
+        } else {
+          return bizResponse_ == null ?
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.getDefaultInstance() : bizResponse_;
+        }
+      }
+      /**
+       * <code>.com.yanghui.distributed.rpc.protocol.rainofflower.BizResponse bizResponse = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponseOrBuilder> 
+          getBizResponseFieldBuilder() {
+        if (bizResponseBuilder_ == null) {
+          bizResponseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponse.Builder, com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower.BizResponseOrBuilder>(
+                  getBizResponse(),
+                  getParentForChildren(),
+                  isClean());
+          bizResponse_ = null;
+        }
+        return bizResponseBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -2759,10 +4130,15 @@ public final class Rainofflower {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Header_AttachmentEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_descriptor;
+    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_fieldAccessorTable;
+      internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Message_descriptor;
   private static final 
@@ -2778,52 +4154,66 @@ public final class Rainofflower {
   static {
     java.lang.String[] descriptorData = {
       "\n\022rainofflower.proto\0221com.yanghui.distri" +
-      "buted.rpc.protocol.rainofflower\"\242\002\n\006Head" +
-      "er\022I\n\004type\030\001 \001(\0162;.com.yanghui.distribut" +
-      "ed.rpc.protocol.rainofflower.HeadType\022\020\n" +
-      "\010priority\030\002 \001(\014\022\025\n\rinterfaceName\030\003 \001(\t\022\022" +
-      "\n\nmethodName\030\004 \001(\t\022]\n\nattachment\030\005 \003(\0132I" +
-      ".com.yanghui.distributed.rpc.protocol.ra" +
-      "inofflower.Header.AttachmentEntry\0321\n\017Att" +
-      "achmentEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t" +
-      ":\0028\001\"\027\n\004Body\022\017\n\007content\030\001 \001(\t\"\233\001\n\007Messag" +
-      "e\022I\n\006header\030\001 \001(\01329.com.yanghui.distribu" +
-      "ted.rpc.protocol.rainofflower.Header\022E\n\004" +
-      "body\030\002 \001(\01327.com.yanghui.distributed.rpc" +
-      ".protocol.rainofflower.Body*\236\001\n\010HeadType" +
-      "\022\017\n\013BIZ_REQUEST\020\000\022\020\n\014BIZ_RESPONSE\020\001\022\017\n\013B" +
-      "IZ_ONE_WAY\020\002\022\025\n\021HANDSHAKE_REQUEST\020\003\022\026\n\022H" +
-      "ANDSHAKE_RESPONSE\020\004\022\026\n\022HEART_BEAT_REQUES" +
-      "T\020\005\022\027\n\023HEART_BEAT_RESPONSE\020\006b\006proto3"
+      "buted.rpc.protocol.rainofflower\032\031google/" +
+      "protobuf/any.proto\"\367\001\n\006Header\022I\n\004type\030\001 " +
+      "\001(\0162;.com.yanghui.distributed.rpc.protoc" +
+      "ol.rainofflower.HeadType\022\020\n\010priority\030\002 \001" +
+      "(\r\022]\n\nattachment\030\003 \003(\0132I.com.yanghui.dis" +
+      "tributed.rpc.protocol.rainofflower.Heade" +
+      "r.AttachmentEntry\0321\n\017AttachmentEntry\022\013\n\003" +
+      "key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"Y\n\nBizReque" +
+      "st\022\025\n\rinterfaceName\030\001 \001(\t\022\022\n\nmethodName\030" +
+      "\002 \001(\t\022\022\n\nparamTypes\030\003 \003(\t\022\014\n\004args\030\004 \003(\t\"" +
+      "9\n\013BizResponse\022\014\n\004code\030\001 \001(\r\022\014\n\004info\030\002 \001" +
+      "(\t\022\016\n\006result\030\003 \001(\t\"\374\001\n\007Message\022I\n\006header" +
+      "\030\001 \001(\01329.com.yanghui.distributed.rpc.pro" +
+      "tocol.rainofflower.Header\022Q\n\nbizRequest\030" +
+      "\002 \001(\0132=.com.yanghui.distributed.rpc.prot" +
+      "ocol.rainofflower.BizRequest\022S\n\013bizRespo" +
+      "nse\030\003 \001(\0132>.com.yanghui.distributed.rpc." +
+      "protocol.rainofflower.BizResponse*\236\001\n\010He" +
+      "adType\022\017\n\013BIZ_REQUEST\020\000\022\020\n\014BIZ_RESPONSE\020" +
+      "\001\022\017\n\013BIZ_ONE_WAY\020\002\022\025\n\021HANDSHAKE_REQUEST\020" +
+      "\003\022\026\n\022HANDSHAKE_RESPONSE\020\004\022\026\n\022HEART_BEAT_" +
+      "REQUEST\020\005\022\027\n\023HEART_BEAT_RESPONSE\020\006b\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.protobuf.AnyProto.getDescriptor(),
         });
     internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Header_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Header_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Header_descriptor,
-        new java.lang.String[] { "Type", "Priority", "InterfaceName", "MethodName", "Attachment", });
+        new java.lang.String[] { "Type", "Priority", "Attachment", });
     internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Header_AttachmentEntry_descriptor =
       internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Header_descriptor.getNestedTypes().get(0);
     internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Header_AttachmentEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Header_AttachmentEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_descriptor =
+    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_fieldAccessorTable = new
+    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Body_descriptor,
-        new java.lang.String[] { "Content", });
-    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Message_descriptor =
+        internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizRequest_descriptor,
+        new java.lang.String[] { "InterfaceName", "MethodName", "ParamTypes", "Args", });
+    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_BizResponse_descriptor,
+        new java.lang.String[] { "Code", "Info", "Result", });
+    internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Message_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_yanghui_distributed_rpc_protocol_rainofflower_Message_descriptor,
-        new java.lang.String[] { "Header", "Body", });
+        new java.lang.String[] { "Header", "BizRequest", "BizResponse", });
+    com.google.protobuf.AnyProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -3,6 +3,7 @@ package com.yanghui.distributed.rpc.server.handler;
 import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.context.RpcThreadContext;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
+import com.yanghui.distributed.rpc.server.Server;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -26,7 +27,7 @@ public class HeartBeatServerHandler extends IdleStateHandler {
         if(msg == null){
             super.channelRead(ctx, msg);
         }
-        if(RpcThreadContext.getContext().getAttachment(RpcConstants.CONFIG_KEY_PROTOCOL).equals(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)){
+        if(ctx.channel().attr(Server.PROTOCOL).equals(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)){
             Rainofflower.Message pkg = (Rainofflower.Message)msg;
             Rainofflower.HeadType type = pkg.getHeader().getType();
             if(type.equals(Rainofflower.HeadType.HEART_BEAT_REQUEST)){

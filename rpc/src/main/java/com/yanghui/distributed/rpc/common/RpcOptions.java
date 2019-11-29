@@ -26,14 +26,7 @@ public class RpcOptions {
      * 决定本配置文件的加载顺序，越大越往后加载
      */
     public static final String RPC_CFG_ORDER                            = "rpc.config.order";
-    /**
-     * 日志默认实现
-     */
-    public static final String LOGGER_IMPL                              = "logger.impl";
-    /**
-     * 扩展点加载的路径
-     */
-    public static final String EXTENSION_LOAD_PATH                      = "extension.load.path";
+
     /**
      * 需要被加载的模块列表，多个用逗号隔开
      * 
@@ -49,10 +42,7 @@ public class RpcOptions {
      * 是否允许线程上下文携带自定义参数，关闭后，可能tracer等会失效，但是可以提高性能
      */
     public static final String CONTEXT_ATTACHMENT_ENABLE                = "context.attachment.enable";
-    /**
-     * 是否启动事件总线，关闭后，可能tracer等会失效，但是可以提高性能
-     */
-    public static final String EVENT_BUS_ENABLE                         = "event.bus.enable";
+
     /**
      * 是否主动监听JVM关闭事件，默认true
      */
@@ -70,14 +60,6 @@ public class RpcOptions {
      */
     public static final String INVOKE_BAGGAGE_ENABLE                    = "invoke.baggage.enable";
 
-    /**
-     * 默认服务提供者启动器
-     */
-    public static final String DEFAULT_PROVIDER_BOOTSTRAP               = "default.provider.bootstrap";
-    /**
-     * 默认服务端调用者启动器
-     */
-    public static final String DEFAULT_CONSUMER_BOOTSTRAP               = "default.consumer.bootstrap";
     /**
      * 默认服务uniqueId
      */

@@ -11,12 +11,13 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ProtocolManager {
 
-    private ConcurrentMap<String, CommandHandler> chainMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, CommandHandlerPipeline> chainMap = new ConcurrentHashMap<>();
 
     public void init(){
         //rainofflower协议业务处理链
-
+        CommandHandlerPipeline rainofflowerPipeline = new CommandHandlerPipeline();
+//        rainofflowerPipeline.setExecutor();
         CommandHandler exceptionHandler = new RainofflowerExceptionHandler();
-        chainMap.put(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER, exceptionHandler);
+        chainMap.put(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER, rainofflowerPipeline);
     }
 }

@@ -16,23 +16,11 @@
  */
 package com.yanghui.distributed.rpc.common.util;
 
-
-import com.yanghui.distributed.rpc.exception.RpcRuntimeException;
+import com.yanghui.distributed.rpc.common.cache.ReflectCache;
 
 /**
  * <p>类型转换工具类</p>
  * <p>调用端时将类描述转换为字符串传输。服务端将字符串转换为具体的类</p>
- * <pre>
- *     保证传递的时候值为可阅读格式，而不是jvm格式（[Lxxx;）：
- *     普通：java.lang.String、java.lang.String[]
- *     基本类型：int、int[]
- *     内部类：com.alipay.example.Inner、com.alipay.example.Inner[]
- *     匿名类：com.alipay.example.Xxx$1、com.alipay.example.Xxx$1[]
- *     本地类：com.alipay.example.Xxx$1Local、com.alipay.example.Xxx$1Local[]
- *     成员类：com.alipay.example.Xxx$Member、com.alipay.example.Xxx$Member[]
- * 同时Class.forName的时候又会解析出Class。
- * </pre>
- * <p>
  *
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  */
@@ -63,34 +51,32 @@ public class ClassTypeUtils {
      * @return Class[]
      */
     public static Class getClass(String typeStr) {
-        Class clazz;
-        if ("void".equals(typeStr)) {
-            clazz = void.class;
-        } else if ("boolean".equals(typeStr)) {
-            clazz = boolean.class;
-        } else if ("byte".equals(typeStr)) {
-            clazz = byte.class;
-        } else if ("char".equals(typeStr)) {
-            clazz = char.class;
-        } else if ("double".equals(typeStr)) {
-            clazz = double.class;
-        } else if ("float".equals(typeStr)) {
-            clazz = float.class;
-        } else if ("int".equals(typeStr)) {
-            clazz = int.class;
-        } else if ("long".equals(typeStr)) {
-            clazz = long.class;
-        } else if ("short".equals(typeStr)) {
-            clazz = short.class;
-        } else {
-            String jvmName = canonicalNameToJvmName(typeStr);
-            try {
-                clazz = Class.forName(jvmName);
-            } catch (ClassNotFoundException e) {
-                throw new RpcRuntimeException(e);
+        Class clazz = ReflectCache.getClassCache(typeStr);
+        if (clazz == null) {
+            if ("void".equals(typeStr)) {
+                clazz = void.class;
+            } else if ("boolean".equals(typeStr)) {
+                clazz = boolean.class;
+            } else if ("byte".equals(typeStr)) {
+                clazz = byte.class;
+            } else if ("char".equals(typeStr)) {
+                clazz = char.class;
+            } else if ("double".equals(typeStr)) {
+                clazz = double.class;
+            } else if ("float".equals(typeStr)) {
+                clazz = float.class;
+            } else if ("int".equals(typeStr)) {
+                clazz = int.class;
+            } else if ("long".equals(typeStr)) {
+                clazz = long.class;
+            } else if ("short".equals(typeStr)) {
+                clazz = short.class;
+            } else {
+                String jvmName = canonicalNameToJvmName(typeStr);
+                clazz = ClassUtils.forName(jvmName);
             }
+            ReflectCache.putClassCache(typeStr, clazz);
         }
-
         return clazz;
     }
 
