@@ -1,7 +1,6 @@
 package com.yanghui.distributed.rpc.context;
 
-import com.yanghui.distributed.rpc.protocol.CommandHandler;
-import com.yanghui.distributed.rpc.protocol.CommandHandlerPipeline;
+import com.yanghui.distributed.rpc.handler.CommandHandlerContext;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -11,7 +10,7 @@ public class RpcRemotingContext {
 
     private ChannelHandlerContext channelHandlerContext;
 
-    private CommandHandler commandHandler;
+    private CommandHandlerContext commandHandlerContext;
 
     public RpcRemotingContext(ChannelHandlerContext ctx){
         this.channelHandlerContext = ctx;

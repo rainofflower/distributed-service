@@ -1,4 +1,4 @@
-package com.yanghui.distributed.rpc.exception;
+package com.yanghui.distributed.rpc.core.exception;
 
 /**
  * @author YangHui
@@ -6,7 +6,7 @@ package com.yanghui.distributed.rpc.exception;
 public class RpcRuntimeException extends RuntimeException {
 
     protected RpcRuntimeException() {
-
+        super();
     }
 
     public RpcRuntimeException(String message) {

@@ -1,6 +1,6 @@
 package com.yanghui.distributed.rpc.config;
 
-import com.yanghui.distributed.rpc.exception.RpcRuntimeException;
+import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 import com.yanghui.distributed.rpc.common.util.NetUtils;
 import com.yanghui.distributed.rpc.server.Server;
 import com.yanghui.distributed.rpc.server.ServerFactory;

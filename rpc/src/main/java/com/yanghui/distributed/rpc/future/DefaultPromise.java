@@ -4,55 +4,111 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 /**
+ * 有回调的任务
  * Created by YangHui on 2019/11/24
  */
-public abstract class DefaultPromise<T> implements Promise<T> {
+public class DefaultPromise<T> implements Runnable,Future<T> {
 
+    /**
+     * 任务处理状态
+     */
     private volatile int state;
 
     private static final AtomicIntegerFieldUpdater STATE_UPDATEER = AtomicIntegerFieldUpdater.newUpdater(DefaultPromise.class, "state");
 
+    /**
+     * 初始状态
+     */
+    private static final int NEW = 0;
+
+    /**
+     * 处理成功，未抛出异常
+     */
     private static final int SUCCESS = 1;
 
+    /**
+     * 处理过程抛出异常
+     */
     private static final int FAILED = 2;
 
+    /**
+     * 取消任务，待实现...
+     */
     private static final int CANCELLED = 3;
 
+    /**
+     * 结果
+     */
     private volatile T result;
 
+    /**
+     * 异常
+     */
     private volatile Throwable cause;
 
-    private final Executor executor;
+    /**
+     * 回调线程池
+     */
+    private Executor executor;
 
+    /**
+     * 具体的任务
+     */
+    private final Callable<T> callable;
+
+    /**
+     * 监听器（回调逻辑）
+     */
     private List<Listener> listeners;
 
-    public DefaultPromise(Executor executor){
+    public DefaultPromise(Callable callable, Executor executor){
+        this.callable = callable;
         this.executor = executor;
+    }
+
+    /**
+     * 处理任务，设置结果，触发监听器
+     */
+    @Override
+    public void run(){
+        if(state != NEW){
+            return;
+        }
+        Callable<T> c = callable;
+        if (c != null && state == NEW) {
+            T result;
+            boolean ran;
+            try {
+                result = c.call();
+                ran = true;
+            } catch (Throwable ex) {
+                result = null;
+                ran = false;
+                setFailure(ex);
+            }
+            if (ran)
+                setSuccess(result);
+        }
     }
 
 
     @Override
     public Future<T> setSuccess(T result) {
-        if(STATE_UPDATEER.compareAndSet(this, 0 , SUCCESS)){
+        if(STATE_UPDATEER.compareAndSet(this, NEW , SUCCESS)){
             this.result = result;
             notifyAllWaits();
             notifyAllListeners();
-        }
-        else{
-
         }
         return this;
     }
 
     @Override
     public void setFailure(Throwable failure) {
-        if(STATE_UPDATEER.compareAndSet(this, 0 , FAILED)){
+        if(STATE_UPDATEER.compareAndSet(this, NEW , FAILED)){
             cause = failure;
             notifyAllWaits();
             notifyAllListeners();
@@ -73,6 +129,7 @@ public abstract class DefaultPromise<T> implements Promise<T> {
             }
             listeners.add(listener);
         }
+        //处理完了立即触发所有监听器，包括刚刚新增的
         if(isDone()){
             try {
                 notifyAllListeners();
@@ -99,6 +156,10 @@ public abstract class DefaultPromise<T> implements Promise<T> {
         return state == SUCCESS;
     }
 
+    /**
+     * 等待处理完成
+     * @return this
+     */
     @Override
     public Future<T> sync() throws InterruptedException {
         synchronized (this){
@@ -109,7 +170,7 @@ public abstract class DefaultPromise<T> implements Promise<T> {
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        return STATE_UPDATEER.compareAndSet(this, 0 , CANCELLED);
+        return STATE_UPDATEER.compareAndSet(this, NEW , CANCELLED);
     }
 
     @Override
@@ -119,7 +180,7 @@ public abstract class DefaultPromise<T> implements Promise<T> {
 
     @Override
     public boolean isDone() {
-        return state != 0 && state != CANCELLED;
+        return state != NEW && state != CANCELLED;
     }
 
     @Override
@@ -128,10 +189,15 @@ public abstract class DefaultPromise<T> implements Promise<T> {
     }
 
     @Override
-    public T get() throws InterruptedException {
-        while(state == 0){
+    public T get() {
+        while(state == NEW){
             synchronized (this){
-                wait();
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    //不抛出中断异常，由外层处理
+                    Thread.currentThread().interrupt();
+                }
             }
         }
         if(state == SUCCESS){
@@ -140,20 +206,41 @@ public abstract class DefaultPromise<T> implements Promise<T> {
             if(state == CANCELLED){
                 throw new CancellationException("任务被取消");
             }else{
-                throw new RuntimeException("任务执行失败");
+                throw new RuntimeException(cause);
             }
         }
     }
 
     @Override
     public T get(long timeout, TimeUnit unit){
-        return null;
+        while(state == NEW){
+            synchronized (this){
+                try {
+                    wait(unit.toMillis(timeout));
+                } catch (InterruptedException e) {
+                    //不抛出中断异常，由外层处理
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+        if(state == SUCCESS){
+            return result;
+        }else{
+            if(state == CANCELLED){
+                throw new CancellationException("任务被取消");
+            }else{
+                throw new RuntimeException(cause);
+            }
+        }
     }
 
     private synchronized void notifyAllWaits(){
         notifyAll();
     }
 
+    /**
+     * 唤醒监听器
+     */
     private void notifyAllListeners(){
         this.executor.execute(()->{
             synchronized (this) {

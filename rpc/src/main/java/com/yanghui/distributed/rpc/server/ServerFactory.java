@@ -17,7 +17,7 @@
 package com.yanghui.distributed.rpc.server;
 
 import com.yanghui.distributed.rpc.common.RpcConstants;
-import com.yanghui.distributed.rpc.exception.RpcRuntimeException;
+import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 import com.yanghui.distributed.rpc.common.RpcConfigs;
 import com.yanghui.distributed.rpc.common.RpcOptions;
 import com.yanghui.distributed.rpc.common.SystemInfo;

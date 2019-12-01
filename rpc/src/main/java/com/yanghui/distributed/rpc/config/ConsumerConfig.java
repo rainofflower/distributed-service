@@ -16,7 +16,11 @@
  */
 package com.yanghui.distributed.rpc.config;
 
-import com.yanghui.distributed.rpc.client.Router;
+import com.yanghui.distributed.rpc.bootstrap.ConsumerBootstrap;
+import com.yanghui.distributed.rpc.client.router.Router;
+import com.yanghui.distributed.rpc.common.util.ClassUtils;
+import com.yanghui.distributed.rpc.common.util.StringUtils;
+import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 
 import java.io.Serializable;
 import java.util.List;
@@ -42,6 +46,16 @@ public class ConsumerConfig<T> implements Serializable {
      * 调用的协议
      */
     protected String                                protocol           = getStringValue(DEFAULT_PROTOCOL);
+
+
+    protected String                                interfaceName;
+
+    protected volatile Class                        proxyClass;
+
+    /**
+     * 服务消费者启动类
+     */
+    private transient ConsumerBootstrap<T>          consumerBootstrap;
 
     /**
      * 直连调用地址
@@ -174,6 +188,21 @@ public class ConsumerConfig<T> implements Serializable {
     /*---------- 参数配置项结束 ------------*/
 
 
+    public T refer() {
+        if (consumerBootstrap == null) {
+            consumerBootstrap = new ConsumerBootstrap(this);
+        }
+        return consumerBootstrap.refer();
+    }
+
+    public String getInterfaceName() {
+        return interfaceName;
+    }
+
+    public ConsumerConfig<T> setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
+        return this;
+    }
 
     /**
      * Gets protocol.
@@ -213,6 +242,28 @@ public class ConsumerConfig<T> implements Serializable {
     public ConsumerConfig<T> setDirectUrl(String directUrl) {
         this.directUrl = directUrl;
         return this;
+    }
+
+
+    public Class<?> getProxyClass() {
+        if (proxyClass != null) {
+            return proxyClass;
+        }
+        try {
+            if (StringUtils.isNotBlank(interfaceName)) {
+                this.proxyClass = ClassUtils.forName(interfaceName);
+                if (!proxyClass.isInterface()) {
+                    throw new RpcRuntimeException("consumer.interface:"+
+                            interfaceName+" 需要设置为接口，而不是实现类");
+                }
+            } else {
+                throw new RpcRuntimeException("consumer.interface:"+
+                        interfaceName+" 不能为空");
+            }
+        } catch (RuntimeException t) {
+            throw new IllegalStateException(t.getMessage(), t);
+        }
+        return proxyClass;
     }
 
     /**

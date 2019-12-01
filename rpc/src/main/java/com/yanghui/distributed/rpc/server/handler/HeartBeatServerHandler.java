@@ -1,7 +1,6 @@
 package com.yanghui.distributed.rpc.server.handler;
 
 import com.yanghui.distributed.rpc.common.RpcConstants;
-import com.yanghui.distributed.rpc.context.RpcThreadContext;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 import com.yanghui.distributed.rpc.server.Server;
 import io.netty.channel.ChannelHandlerContext;

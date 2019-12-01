@@ -5,7 +5,7 @@ import com.yanghui.distributed.rpc.common.base.Sortable;
 import com.yanghui.distributed.rpc.common.struct.OrderedComparator;
 import com.yanghui.distributed.rpc.common.util.ClassLoaderUtils;
 import com.yanghui.distributed.rpc.common.util.FileUtils;
-import com.yanghui.distributed.rpc.exception.RpcRuntimeException;
+import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 import com.yanghui.distributed.rpc.common.util.CompatibleTypeUtils;
 
 import java.io.BufferedReader;

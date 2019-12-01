@@ -1,6 +1,6 @@
 package com.yanghui.distributed.rpc.codec;
 
-import com.yanghui.distributed.rpc.exception.RpcRuntimeException;
+import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

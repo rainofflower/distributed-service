@@ -388,7 +388,7 @@ public class RpcConstants {
     public static final String  CONFIG_KEY_WEIGHT                  = "weight";
 
     /**
-     * 配置key:interface | interfaceId
+     * 配置key:interface | interfaceName
      */
     public static final String  CONFIG_KEY_INTERFACE               = "interface";
 

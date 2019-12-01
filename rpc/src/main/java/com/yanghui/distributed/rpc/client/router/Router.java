@@ -1,4 +1,4 @@
-package com.yanghui.distributed.rpc.client;
+package com.yanghui.distributed.rpc.client.router;
 
 import com.yanghui.distributed.rpc.config.ConsumerConfig;
 

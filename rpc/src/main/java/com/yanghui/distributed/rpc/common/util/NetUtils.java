@@ -16,7 +16,7 @@
  */
 package com.yanghui.distributed.rpc.common.util;
 
-import com.yanghui.distributed.rpc.exception.RpcRuntimeException;
+import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 

@@ -16,7 +16,7 @@
  */
 package com.yanghui.distributed.rpc.common.util;
 
-import com.yanghui.distributed.rpc.exception.RpcRuntimeException;
+import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

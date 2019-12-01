@@ -7,18 +7,18 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author YangHui
  */
-public class RpcThreadContext {
+public class RpcInternalContext {
 
-    private static final ThreadLocal<RpcThreadContext> LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<RpcInternalContext> LOCAL = new ThreadLocal<>();
 
-    public static void setContext(RpcThreadContext context){
+    public static void setContext(RpcInternalContext context){
         LOCAL.set(context);
     }
 
-    public static RpcThreadContext getContext(){
-        RpcThreadContext context = LOCAL.get();
+    public static RpcInternalContext getContext(){
+        RpcInternalContext context = LOCAL.get();
         if(context == null){
-            context = new RpcThreadContext();
+            context = new RpcInternalContext();
             LOCAL.set(context);
         }
         return context;
@@ -34,13 +34,13 @@ public class RpcThreadContext {
 
     private InetSocketAddress remoteAddress;
 
-    protected RpcThreadContext(){}
+    protected RpcInternalContext(){}
 
     public Object getAttachment(String key) {
         return key == null ? null : attachments.get(key);
     }
 
-    public RpcThreadContext setAttachment(String key, Object value){
+    public RpcInternalContext setAttachment(String key, Object value){
         if(key == null){
             return this;
         }
@@ -60,7 +60,7 @@ public class RpcThreadContext {
         return localAddress;
     }
 
-    public RpcThreadContext setLocalAddress(InetSocketAddress address){
+    public RpcInternalContext setLocalAddress(InetSocketAddress address){
         this.localAddress = address;
         return this;
     }
@@ -69,7 +69,7 @@ public class RpcThreadContext {
         return remoteAddress;
     }
 
-    public RpcThreadContext setRemoteAddress(InetSocketAddress address){
+    public RpcInternalContext setRemoteAddress(InetSocketAddress address){
         this.remoteAddress = address;
         return this;
     }
