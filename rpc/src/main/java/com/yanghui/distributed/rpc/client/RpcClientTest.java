@@ -16,6 +16,8 @@ import com.yanghui.distributed.rpc.server.Server;
 import com.yanghui.distributed.rpc.server.ServerFactory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -32,9 +34,9 @@ public class RpcClientTest {
                     .setProtocol(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)
                     .setInterfaceName(EchoService.class.getName())
                     .setTimeout(2000);
-            EchoService echoService = consumerConfigSync.refer();
+            EchoService echoServiceSync = consumerConfigSync.refer();
             try {
-                String result = echoService.echo("sync调用");
+                String result = echoServiceSync.echo("sync调用");
                 log.info("结果：{}",result);
             }catch (Exception e){
                 log.info("发生错误: ",e);
@@ -48,7 +50,7 @@ public class RpcClientTest {
             user.setName("test");
             user.setAge(23);
             try{
-                String friend = echoService.friend(user, 20, 25, "rainofflower");
+                String friend = echoServiceSync.friend(user, 20, 25, "rainofflower");
                 log.info(friend);
             }catch (Exception e){
                 log.info("发生错误: ",e);
@@ -68,13 +70,13 @@ public class RpcClientTest {
             consumerConfigCallback.setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
                     .setProtocol(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)
                     .setInterfaceName(EchoService.class.getName())
-                    .setTimeout(1000)
+                    .setTimeout(3000)
                     .setResponseListener(new Listener() {
                         @Override
                         public void operationComplete(Future future) throws Exception {
                             if(future.isSuccess()){
                                 Object result = future.get();
-                                log.info("结果:{}",result.toString());
+                                log.info("callback结果:{}",result.toString());
                             }else{
                                 Throwable failure = future.getFailure();
                                 log.error(failure.toString());
@@ -89,6 +91,30 @@ public class RpcClientTest {
                     });
             EchoService echoServiceCallback = consumerConfigCallback.refer();
             echoServiceCallback.echo("callback调用");
+
+            ConsumerConfig<EchoService> consumerConfigOneWay = new ConsumerConfig<EchoService>();
+            consumerConfigOneWay.setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
+                    .setProtocol(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)
+                    .setInterfaceName(EchoService.class.getName());
+            EchoService echoServiceOneWay = consumerConfigOneWay.refer();
+            List<User> users = new ArrayList<>();
+            users.add(new User("name1",1));
+            users.add(new User("name2",2));
+            users.add(new User("name3",3));
+            echoServiceOneWay.oneWayTest(users,"oneWay调用");
+
+            log.info(echoServiceSync.test2());
+            log.info(echoServiceSync.test2());
+
+            echoServiceOneWay.test2();
+            echoServiceOneWay.test2();
+
+            echoServiceCallback.test2();
+            echoServiceCallback.test2();
+
+            echoServiceOneWay.oneWayTest(users,"sync调用");
+            echoServiceOneWay.oneWayTest(users,"sync调用");
+
         }catch(Exception e){
             e.printStackTrace();
         }

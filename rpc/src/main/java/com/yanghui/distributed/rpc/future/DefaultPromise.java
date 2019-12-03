@@ -1,7 +1,5 @@
 package com.yanghui.distributed.rpc.future;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -125,7 +123,7 @@ public class DefaultPromise<T> implements Promise<T> {
         }
     }
 
-    @Autowired
+    @Override
     public Throwable getFailure(){
         return cause;
     }
@@ -245,7 +243,8 @@ public class DefaultPromise<T> implements Promise<T> {
             return result;
         }else{
             if(state == CANCELLED){
-                throw new CancellationException("任务被取消");
+                //任务被取消
+                throw new CancellationException();
             }else{
                 throw new ExecutionException(cause);
             }

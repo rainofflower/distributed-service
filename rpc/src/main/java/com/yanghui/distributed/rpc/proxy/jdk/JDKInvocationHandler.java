@@ -1,19 +1,15 @@
 package com.yanghui.distributed.rpc.proxy.jdk;
 
-import com.alibaba.fastjson.JSONObject;
-import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.core.Request;
 import com.yanghui.distributed.rpc.core.Response;
 import com.yanghui.distributed.rpc.invoke.Invoker;
-import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
+ * jdkProxy 的 InvocationHandler
  * @author YangHui
  */
 public class JDKInvocationHandler implements InvocationHandler {
@@ -33,32 +29,9 @@ public class JDKInvocationHandler implements InvocationHandler {
             return proxy == another ||
                     (proxy.getClass().isInstance(another) && invoker.equals(parseInvoker(another)));
         }
-        Request request = new Request();
-        Rainofflower.Message.Builder requestBuilder = Rainofflower.Message.newBuilder();
-        Rainofflower.Header.Builder headBuilder = Rainofflower.Header.newBuilder();
-        Rainofflower.Header header = headBuilder.setType(Rainofflower.HeadType.BIZ_REQUEST)
-                .setPriority(1)
-                .putAttachment(RpcConstants.REQUEST_ID, request.getId()+"")
-                .build();
-        Rainofflower.BizRequest.Builder contentBuilder = Rainofflower.BizRequest.newBuilder();
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        List<String> paramTypeStrList = new ArrayList<>();
-        for (Class<?> clazz : parameterTypes) {
-            paramTypeStrList.add(clazz.getName());
-        }
-        List<String> argsJsonList = new ArrayList<>();
-        for (Object arg : args) {
-            argsJsonList.add(JSONObject.toJSONString(arg));
-        }
-        Rainofflower.BizRequest content = contentBuilder.setInterfaceName(method.getDeclaringClass().getName())
-                .setMethodName(method.getName())
-                .addAllParamTypes(paramTypeStrList)
-                .addAllArgs(argsJsonList)
-                .build();
-        Rainofflower.Message message = requestBuilder.setHeader(header)
-                .setBizRequest(content)
-                .build();
-        request.setMessage(message);
+        Request request = new Request()
+                .setMethod(method)
+                .setArgs(args);
         Response response = invoker.invoke(request);
         return response.getResult();
     }

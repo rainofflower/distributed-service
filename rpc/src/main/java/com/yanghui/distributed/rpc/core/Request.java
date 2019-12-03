@@ -3,6 +3,8 @@ package com.yanghui.distributed.rpc.core;
 import com.yanghui.distributed.rpc.common.util.IDGenerator;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 
+import java.lang.reflect.Method;
+
 /**
  * @author YangHui
  */
@@ -16,6 +18,10 @@ public class Request {
     private transient String invokeType;
 
     private transient int timeout;
+
+    private Method method;
+
+    private Object[] args;
 
     private Rainofflower.Message message;
 
@@ -56,6 +62,24 @@ public class Request {
 
     public Request setId(int id) {
         this.id = id;
+        return this;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public Request setMethod(Method method) {
+        this.method = method;
+        return this;
+    }
+
+    public Object[] getArgs() {
+        return args;
+    }
+
+    public Request setArgs(Object[] args) {
+        this.args = args;
         return this;
     }
 }

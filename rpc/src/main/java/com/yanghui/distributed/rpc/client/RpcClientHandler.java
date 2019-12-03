@@ -25,6 +25,7 @@ public class RpcClientHandler extends ChannelInboundHandlerAdapter {
         Object result = JSONObject.parse(resultJson);
         String id = message.getHeader().getAttachmentOrThrow(RpcConstants.REQUEST_ID);
         InvokeFuture invokeFuture = ctx.channel().attr(Connection.CONNECTION).get().getInvokeFuture(Integer.parseInt(id));
+        //正常情况下 invokeFutureMap 里都会有 invokeFuture
         if(invokeFuture != null){
             invokeFuture.setSuccess(result);
             invokeFuture.cancelTimeOut();
@@ -40,7 +41,6 @@ public class RpcClientHandler extends ChannelInboundHandlerAdapter {
                     }
                 }
             }
-
         }
 //        ctx.fireChannelRead(msg);
     }

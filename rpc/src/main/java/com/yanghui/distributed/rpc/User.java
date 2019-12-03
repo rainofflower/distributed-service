@@ -9,4 +9,12 @@ import lombok.Data;
 public class User {
     String name;
     Integer age;
+
+    public User(){}
+
+    public User(String name, int age){
+        this.name = name;
+        this.age = age;
+    }
+
 }

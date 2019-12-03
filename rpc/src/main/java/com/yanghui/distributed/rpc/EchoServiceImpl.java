@@ -1,5 +1,6 @@
 package com.yanghui.distributed.rpc;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -21,5 +22,24 @@ public class EchoServiceImpl implements EchoService{
     @Override
     public String friend(User user, int low, int high, String nick) {
         return "返回信息："+ user.getName() + " | " + user.getAge() + " | " + low + " - " + high + " | "+nick;
+    }
+
+    @Override
+    public void oneWayTest(List<User> users, String name) {
+        StringBuilder builder = new StringBuilder();
+        for(User user : users){
+            builder.append(user.getName())
+                    .append("-")
+                    .append(user.getAge())
+                    .append("\n");
+        }
+        System.out.println("name:"+name+"\n"+builder.toString());
+    }
+
+    @Override
+    public String test2() {
+        String s = "test2执行了业务";
+        System.out.println(s);
+        return s;
     }
 }

@@ -1,8 +1,11 @@
 package com.yanghui.distributed.rpc.client;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yanghui.distributed.rpc.codec.RainofflowerProtocolDecoder;
 import com.yanghui.distributed.rpc.codec.RainofflowerProtocolEncoder;
+import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.common.struct.NamedThreadFactory;
+import com.yanghui.distributed.rpc.common.util.CommonUtils;
 import com.yanghui.distributed.rpc.config.ClientTransportConfig;
 import com.yanghui.distributed.rpc.context.RpcInvokeContext;
 import com.yanghui.distributed.rpc.core.Request;
@@ -11,6 +14,7 @@ import com.yanghui.distributed.rpc.core.ResponseStatus;
 import com.yanghui.distributed.rpc.core.exception.ErrorType;
 import com.yanghui.distributed.rpc.core.exception.RpcException;
 import com.yanghui.distributed.rpc.future.InvokeFuture;
+import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -21,12 +25,17 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
+import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
  * @author YangHui
  */
+@Slf4j
 public class Connection {
 
     public static final AttributeKey<Connection> CONNECTION = AttributeKey.valueOf("connection");
@@ -75,11 +84,26 @@ public class Connection {
         return invokeFutureMap.remove(id);
     }
 
-    public void oneWaySend(Object request){
-        channel.writeAndFlush(request);
+    public void oneWaySend(Request request){
+        buildBizMessage(request, true);
+        try {
+            channel.writeAndFlush(request.getMessage()).addListener((ChannelFuture future) -> {
+                if(!future.isSuccess()){
+                    Channel channel = future.channel();
+                    if(channel != null){
+                        log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),future.cause());
+                    }
+                }
+            });
+        }catch (Exception e){
+            if(channel != null){
+                log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),e);
+            }
+        }
     }
 
     public Response syncSend(Request request, long timeout) {
+        buildBizMessage(request, false);
         InvokeFuture invokeFuture = RpcInvokeContext.getContext().getInvokeFuture();
         Connection connection = channel.attr(Connection.CONNECTION).get();
         connection.putInvokeFuture(invokeFuture.getInvokeId(), invokeFuture);
@@ -90,6 +114,10 @@ public class Connection {
                     InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
                     if(f != null){
                         f.setFailure(future.cause());
+                        Channel channel = future.channel();
+                        if(channel != null){
+                            log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),future.cause());
+                        }
                     }
                 }
             });
@@ -97,6 +125,9 @@ public class Connection {
             InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
             if(f != null){
                 f.setFailure(e);
+            }
+            if(channel != null){
+                log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),e);
             }
         }
         Object result = null;
@@ -108,9 +139,6 @@ public class Connection {
                     .setCause(e)
                     .setStatus(ResponseStatus.ERROR);
         } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-        if(result == null){
             //超时
             return new Response()
                     .setStatus(ResponseStatus.TIMEOUT);
@@ -120,6 +148,7 @@ public class Connection {
     }
 
     public void asyncSend(Request request, long timeout){
+        buildBizMessage(request, false);
         InvokeFuture invokeFuture = RpcInvokeContext.getContext().getInvokeFuture();
         Connection connection = channel.attr(Connection.CONNECTION).get();
         connection.putInvokeFuture(invokeFuture.getInvokeId(), invokeFuture);
@@ -140,6 +169,10 @@ public class Connection {
                     if(f != null){
                         f.cancelTimeOut();
                         f.setFailure(future.cause());
+                        Channel channel = future.channel();
+                        if(channel != null){
+                            log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),future.cause());
+                        }
                     }
                 }
             });
@@ -148,6 +181,9 @@ public class Connection {
             if (f != null) {
                 f.cancelTimeOut();
                 f.setFailure(e);
+            }
+            if(channel != null){
+                log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),e);
             }
         }
     }
@@ -167,5 +203,40 @@ public class Connection {
 
     public ClientTransportConfig getClientTransportConfig() {
         return clientTransportConfig;
+    }
+
+    private void buildBizMessage(Request request, boolean oneWay){
+        Rainofflower.Message.Builder requestBuilder = Rainofflower.Message.newBuilder();
+        Rainofflower.Header.Builder headBuilder = Rainofflower.Header.newBuilder();
+        if(oneWay){
+            headBuilder.setType(Rainofflower.HeadType.BIZ_ONE_WAY);
+        }else{
+            headBuilder.setType(Rainofflower.HeadType.BIZ_REQUEST);
+        }
+        Rainofflower.Header header = headBuilder.setPriority(1)
+                .putAttachment(RpcConstants.REQUEST_ID, request.getId() + "")
+                .build();
+        Rainofflower.BizRequest.Builder contentBuilder = Rainofflower.BizRequest.newBuilder();
+        Method method = request.getMethod();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        List<String> paramTypeStrList = new ArrayList<>();
+        List<String> argsJsonList = new ArrayList<>();
+        if(!CommonUtils.isEmpty(parameterTypes)){
+            Object[] args = request.getArgs();
+            for(int i = 0; i<parameterTypes.length; i++){
+                Class<?> clazz = parameterTypes[i];
+                paramTypeStrList.add(clazz.getName());
+                argsJsonList.add(JSONObject.toJSONString(args[i]));
+            }
+        }
+        Rainofflower.BizRequest content = contentBuilder.setInterfaceName(method.getDeclaringClass().getName())
+                .setMethodName(method.getName())
+                .addAllParamTypes(paramTypeStrList)
+                .addAllArgs(argsJsonList)
+                .build();
+        Rainofflower.Message message = requestBuilder.setHeader(header)
+                .setBizRequest(content)
+                .build();
+        request.setMessage(message);
     }
 }

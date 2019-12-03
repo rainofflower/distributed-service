@@ -69,7 +69,7 @@ public class FailoverCluster extends Cluster {
             //oneway 单向调用
             else if(RpcConstants.INVOKER_TYPE_ONEWAY.equals(invokeType)){
                 connection.oneWaySend(request);
-                return null;
+                return buildEmptyResponse();
             }
             else{
                 throw new RpcException(ErrorType.CLIENT_UNDECLARED_ERROR,"客户端未定义执行类型,invokeType:"+invokeType);
@@ -91,10 +91,12 @@ public class FailoverCluster extends Cluster {
     public Response invoke(Request request) throws RpcException {
         String invokeType = consumerConfig.getInvokeType();
         request.setInvokeType(invokeType);
-        InvokeFuture invokeFuture = new InvokeFuture(request.getId());
-        RpcInvokeContext context = RpcInvokeContext.getContext();
-        context.setInvokeFuture(invokeFuture);
-        context.setTimeout(consumerConfig.getTimeout());
+        if(!RpcConstants.INVOKER_TYPE_ONEWAY.equals(invokeType)){
+            RpcInvokeContext context = RpcInvokeContext.getContext();
+            InvokeFuture invokeFuture = new InvokeFuture(request.getId());
+            context.setInvokeFuture(invokeFuture);
+            context.setTimeout(consumerConfig.getTimeout());
+        }
         //选择provider，未实现
         ProviderInfo providerInfo = new ProviderInfo("localhost",8200);
         return sendMsg(providerInfo, request);

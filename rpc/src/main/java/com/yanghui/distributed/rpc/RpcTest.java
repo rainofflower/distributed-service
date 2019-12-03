@@ -8,6 +8,8 @@ import com.yanghui.distributed.rpc.server.Server;
 import com.yanghui.distributed.rpc.server.ServerFactory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 /**
  * Created by YangHui on 2019/11/22
  */
@@ -28,8 +30,11 @@ public class RpcTest{
             Server server = ServerFactory.getServer(serverConfig);
             server.start();
             try {
+                //发布方法
                 ReflectCache.putMethodCache(EchoService.class.getName(), EchoService.class.getMethod("echo", String.class));
                 ReflectCache.putMethodCache(EchoService.class.getName(), EchoService.class.getMethod("friend", User.class, int.class, int.class, String.class));
+                ReflectCache.putMethodCache(EchoService.class.getName(), EchoService.class.getMethod("oneWayTest", List.class, String.class));
+                ReflectCache.putMethodCache(EchoService.class.getName(), EchoService.class.getMethod("test2"));
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
