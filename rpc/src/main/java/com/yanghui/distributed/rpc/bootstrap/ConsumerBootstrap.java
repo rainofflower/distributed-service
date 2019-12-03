@@ -55,8 +55,9 @@ public class ConsumerBootstrap<T> {
                 return proxyInstance;
             }
             JDKInvocationHandler invocationHandler = new JDKInvocationHandler();
-            FailoverCluster failoverCluster = new FailoverCluster(this);
-            invocationHandler.setInvoker(failoverCluster);
+            Cluster cluster = new FailoverCluster(this);
+            cluster.init();
+            invocationHandler.setInvoker(cluster);
             Class interfaceClass = ClassTypeUtils.getClass(consumerConfig.getInterfaceName());
             ClassLoader classLoader = ClassLoaderUtils.getCurrentClassLoader();
             proxyInstance  = (T) Proxy.newProxyInstance(classLoader, new Class[]{interfaceClass}, invocationHandler);

@@ -1,69 +1,55 @@
 package com.yanghui.distributed.rpc.future;
 
 import java.util.concurrent.*;
-import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * 客户端获取调用结果future
  * @author YangHui
  */
-public class InvokeFuture implements Future {
+public class InvokeFuture extends DefaultPromise {
 
     private int invokeId;
 
-    private CountDownLatch latch = new CountDownLatch(1);
+    /**
+     * 超时检测调度线程
+     */
+    private ThreadPoolExecutor scheduleExecutor;
 
-    private volatile Object result;
-
-    private volatile Throwable cause;
+    private AtomicBoolean callbackFlag = new AtomicBoolean(false);
 
     public InvokeFuture(int invokeId){
         this.invokeId = invokeId;
     }
 
-    public void setSuccess(Object result){
-        this.result = result;
-        latch.countDown();
-    }
-
-    public void setFailure(Throwable cause){
-        this.cause = cause;
-        latch.countDown();
-    }
-
-    @Override
-    public boolean isDone() {
-        return latch.getCount() <= 0;
-    }
-
-    @Override
-    public Object get() throws InterruptedException, ExecutionException {
-        latch.await();
-        if(cause != null){
-            throw new ExecutionException(cause);
+    /**
+     * 取消超时检测
+     */
+    public void cancelTimeOut(){
+        if(scheduleExecutor != null && !scheduleExecutor.isShutdown()){
+            scheduleExecutor.shutdown();
         }
-        return result;
     }
 
-    @Override
-    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        latch.await(timeout, unit);
-        if(cause != null){
-            throw new ExecutionException(cause);
+    /**
+     * 回调listener
+     * 只触发一次
+     */
+    public void executeCallback(){
+        if(callbackFlag.compareAndSet(false, true)){
+            notifyAllListeners();
         }
-        return result;
-    }
-
-    @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
-        return false;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return false;
     }
 
     public int getInvokeId() {
         return invokeId;
+    }
+
+    public ThreadPoolExecutor getScheduleExecutor() {
+        return scheduleExecutor;
+    }
+
+    public void setScheduleExecutor(ThreadPoolExecutor scheduleExecutor) {
+        this.scheduleExecutor = scheduleExecutor;
     }
 }

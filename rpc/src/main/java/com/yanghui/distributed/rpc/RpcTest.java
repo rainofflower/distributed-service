@@ -14,29 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RpcTest{
 
-    public static void main(String... a) throws InterruptedException {
-//        new Thread(()->{
-//            try {
-//                RpcExporter.exporter("localhost",8088);
-//            } catch (exception e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//        RpcImporter<EchoService> rpcImporter = new RpcImporter<>();
-//        EchoService echoService = rpcImporter.importer(EchoService.class, new InetSocketAddress("localhost", 8200));
-//        while(true){
-//            System.out.println(echoService.echo("Are you ok ?"));
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                //
-//            }
-//        }
-//        String localIpv4 = NetUtils.getLocalIpv4();
-//        log.info(localIpv4);
-//        LinkedList<Integer> list = new LinkedList<>();
-//        list.add(1);
-//        list.add(2);
+    public static void main(String... a) {
         try {
             ServerConfig serverConfig = new ServerConfig();
             serverConfig.setPort(8200)

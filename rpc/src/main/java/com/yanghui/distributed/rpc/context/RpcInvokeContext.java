@@ -7,29 +7,48 @@ import com.yanghui.distributed.rpc.future.InvokeFuture;
  */
 public class RpcInvokeContext {
 
-    private static final ThreadLocal<InvokeFuture> LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<RpcInvokeContext> LOCAL = new ThreadLocal<>();
 
     /**
-     * 获取InvokeFuture ,不清除线程上下文
+     * 获取 RpcInvokeContext
      * @return
      */
-    public static InvokeFuture get(){
-        return get(false);
+    public static RpcInvokeContext getContext(){
+        RpcInvokeContext context = LOCAL.get();
+        if(context == null){
+            context = new RpcInvokeContext();
+            LOCAL.set(context);
+        }
+        return context;
     }
 
+    public static void removeContext(){
+        LOCAL.remove();
+    }
+
+    private InvokeFuture invokeFuture;
+
     /**
-     * @param clear 是否清除线程上下文
-     * @return
+     * 超时时间，毫秒
      */
-    public static InvokeFuture get(boolean clear){
-        InvokeFuture invokeFuture = LOCAL.get();
-        if(clear){
-            LOCAL.remove();
-        }
+    private long timeout;
+
+    public InvokeFuture getInvokeFuture() {
         return invokeFuture;
     }
 
-    public static void set(InvokeFuture future){
-        LOCAL.set(future);
+    public RpcInvokeContext setInvokeFuture(InvokeFuture invokeFuture) {
+        this.invokeFuture = invokeFuture;
+        return this;
     }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public RpcInvokeContext setTimeout(long timeout) {
+        this.timeout = timeout;
+        return this;
+    }
+
 }

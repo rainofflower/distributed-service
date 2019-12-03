@@ -1,5 +1,7 @@
 package com.yanghui.distributed.rpc.client;
 
+import java.util.Objects;
+
 /**
  * @author YangHui
  */
@@ -8,12 +10,12 @@ public class ProviderInfo {
     /**
      * The Ip.
      */
-    private String                                        host;
+    private String host;
 
     /**
      * The Port.
      */
-    private int                                           port             = 80;
+    private int port;
 
     public ProviderInfo() {
 
@@ -46,5 +48,27 @@ public class ProviderInfo {
     public ProviderInfo setHost(String host) {
         this.host = host;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProviderInfo that = (ProviderInfo) o;
+        return port == that.port &&
+                host.equals(that.host);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(host, port);
+    }
+
+    @Override
+    public String toString() {
+        return "ProviderInfo{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                '}';
     }
 }

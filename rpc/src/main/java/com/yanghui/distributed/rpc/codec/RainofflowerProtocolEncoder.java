@@ -5,6 +5,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.ProtocolStringList;
 import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.common.util.ClassTypeUtils;
+import com.yanghui.distributed.rpc.core.exception.ErrorType;
+import com.yanghui.distributed.rpc.core.exception.RpcException;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -44,7 +46,12 @@ public class RainofflowerProtocolEncoder extends MessageToByteEncoder<Rainofflow
 //                argsList.get(0).
 //            }
 //        }
-        byte[] bytes = msg.toByteArray();
+        byte[] bytes;
+        try{
+            bytes = msg.toByteArray();
+        }catch (Exception e){
+            throw new RpcException(ErrorType.CLIENT_SERIALIZE,"消息内容序列化失败",e);
+        }
         //除crcCode和length所有数据长度
         out.writeInt(bytes.length);
         out.writeBytes(bytes);

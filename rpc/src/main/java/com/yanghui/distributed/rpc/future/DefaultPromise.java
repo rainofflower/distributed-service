@@ -8,10 +8,10 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 /**
- * 有回调的任务
+ * promise模式
  * Created by YangHui on 2019/11/24
  */
-public class DefaultPromise<T> implements Runnable,Future<T> {
+public class DefaultPromise<T> implements Promise<T> {
 
     /**
      * 任务处理状态
@@ -53,21 +53,31 @@ public class DefaultPromise<T> implements Runnable,Future<T> {
     /**
      * 回调线程池
      */
-    private Executor executor;
+    private Executor callbackExecutor;
 
     /**
      * 具体的任务
      */
-    private final Callable<T> callable;
+    private Callable<T> callable;
 
     /**
      * 监听器（回调逻辑）
      */
     private List<Listener> listeners;
 
-    public DefaultPromise(Callable callable, Executor executor){
+    /**
+     * 无参构造器，使用这个构造方法时promise仅当future用
+     */
+    public DefaultPromise(){}
+
+    /**
+     * 带 任务和 回调线程池的构造器
+     * @param callable 需要执行的任务
+     * @param callbackExecutor 回调线程池
+     */
+    public DefaultPromise(Callable callable, Executor callbackExecutor){
         this.callable = callable;
-        this.executor = executor;
+        this.callbackExecutor = callbackExecutor;
     }
 
     /**
@@ -130,28 +140,57 @@ public class DefaultPromise<T> implements Runnable,Future<T> {
             listeners.add(listener);
         }
         //处理完了立即触发所有监听器，包括刚刚新增的
+        // 注意监听器始终是在指定的回调线程池中执行，不管add的时候任务是否已经执行完成
         if(isDone()){
-            try {
-                notifyAllListeners();
-            } catch (Exception e) {
-                //
+            notifyAllListeners();
+        }
+        return this;
+    }
+
+    @Override
+    public Future<T> await() {
+        if(state == NEW) {
+            synchronized (this) {
+                while (state == NEW) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        //不抛出中断异常，由外层处理
+                        Thread.currentThread().interrupt();
+                    }
+                }
             }
         }
         return this;
     }
 
+    /**
+     * 指定时间内返回是否成功标志
+     * @param timeout 超时时间
+     * @param unit 时间单位
+     * @return true if success
+     * @throws TimeoutException 指定时间内未处理完成抛出超时异常
+     */
     @Override
-    public Future<T> await() throws InterruptedException {
-        synchronized (this){
-            wait();
-        }
-        return this;
-    }
-
-    @Override
-    public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
-        synchronized (this){
-            wait(unit.toMillis(timeout));
+    public boolean await(long timeout, TimeUnit unit) throws TimeoutException {
+        if(state == NEW) {
+            synchronized (this) {
+                long start = System.currentTimeMillis();
+                long waitTime = unit.toMillis(timeout);
+                while (state == NEW) {
+                    try {
+                        wait(waitTime);
+                        long now = System.currentTimeMillis();
+                        waitTime = waitTime - (now - start);
+                        if (waitTime <= 0) {
+                            throw new TimeoutException();
+                        }
+                    } catch (InterruptedException e) {
+                        //不抛出中断异常，由外层处理
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
         }
         return state == SUCCESS;
     }
@@ -161,11 +200,8 @@ public class DefaultPromise<T> implements Runnable,Future<T> {
      * @return this
      */
     @Override
-    public Future<T> sync() throws InterruptedException {
-        synchronized (this){
-            wait();
-        }
-        return this;
+    public Future<T> sync() {
+        return await();
     }
 
     @Override
@@ -189,47 +225,29 @@ public class DefaultPromise<T> implements Runnable,Future<T> {
     }
 
     @Override
-    public T get() {
-        while(state == NEW){
-            synchronized (this){
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    //不抛出中断异常，由外层处理
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
+    public T get() throws ExecutionException{
+        await();
         if(state == SUCCESS){
             return result;
         }else{
             if(state == CANCELLED){
-                throw new CancellationException("任务被取消");
+                throw new CancellationException();
             }else{
-                throw new RuntimeException(cause);
+                throw new ExecutionException(cause);
             }
         }
     }
 
     @Override
-    public T get(long timeout, TimeUnit unit){
-        while(state == NEW){
-            synchronized (this){
-                try {
-                    wait(unit.toMillis(timeout));
-                } catch (InterruptedException e) {
-                    //不抛出中断异常，由外层处理
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-        if(state == SUCCESS){
+    public T get(long timeout, TimeUnit unit) throws TimeoutException, ExecutionException {
+        boolean success = await(timeout, unit);
+        if(success){
             return result;
         }else{
             if(state == CANCELLED){
                 throw new CancellationException("任务被取消");
             }else{
-                throw new RuntimeException(cause);
+                throw new ExecutionException(cause);
             }
         }
     }
@@ -241,21 +259,36 @@ public class DefaultPromise<T> implements Runnable,Future<T> {
     /**
      * 唤醒监听器
      */
-    private void notifyAllListeners(){
-        this.executor.execute(()->{
+    protected void notifyAllListeners(){
+        this.callbackExecutor.execute(()->{
             synchronized (this) {
+                //需要先锁住，再判断listeners是否为空
                 if (this.listeners != null && !this.listeners.isEmpty()) {
                     List<Listener> listeners = this.listeners;
                     this.listeners = null;
                     for (Listener l : listeners) {
                         try{
-                            l.operationComplete(DefaultPromise.this);
+                            l.operationComplete(this);
                         }catch (Throwable t){
-                            //
+                            //忽略用户自定义回调方法异常
                         }
                     }
                 }
             }
         });
     }
+
+    public Executor getCallbackExecutor() {
+        return callbackExecutor;
+    }
+
+    public Future<T> setCallbackExecutor(Executor callbackExecutor) {
+        this.callbackExecutor = callbackExecutor;
+        return this;
+    }
+
+    public List<Listener> getListeners() {
+        return listeners;
+    }
+
 }

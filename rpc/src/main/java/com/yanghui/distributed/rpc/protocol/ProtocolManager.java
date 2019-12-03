@@ -18,7 +18,7 @@ public class ProtocolManager {
     public void init(){
         //rainofflower协议业务处理链
         CommandHandlerPipeline rainofflowerPipeline = new CommandHandlerPipeline();
-//        rainofflowerPipeline.setExecutor();
+//        rainofflowerPipeline.setScheduleExecutor();
         CommandHandler exceptionHandler = new RainofflowerExceptionHandler();
         chainMap.put(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER, rainofflowerPipeline);
     }

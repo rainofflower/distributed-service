@@ -1,6 +1,7 @@
 package com.yanghui.distributed.rpc.proxy.jdk;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.core.Request;
 import com.yanghui.distributed.rpc.core.Response;
 import com.yanghui.distributed.rpc.invoke.Invoker;
@@ -11,7 +12,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author YangHui
@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class JDKInvocationHandler implements InvocationHandler {
 
     private Invoker invoker;
-
-    private AtomicInteger requestIdGenerator = new AtomicInteger(0);
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -35,11 +33,12 @@ public class JDKInvocationHandler implements InvocationHandler {
             return proxy == another ||
                     (proxy.getClass().isInstance(another) && invoker.equals(parseInvoker(another)));
         }
+        Request request = new Request();
         Rainofflower.Message.Builder requestBuilder = Rainofflower.Message.newBuilder();
         Rainofflower.Header.Builder headBuilder = Rainofflower.Header.newBuilder();
         Rainofflower.Header header = headBuilder.setType(Rainofflower.HeadType.BIZ_REQUEST)
                 .setPriority(1)
-                .putAttachment("id",requestIdGenerator.incrementAndGet()+"")
+                .putAttachment(RpcConstants.REQUEST_ID, request.getId()+"")
                 .build();
         Rainofflower.BizRequest.Builder contentBuilder = Rainofflower.BizRequest.newBuilder();
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -59,7 +58,6 @@ public class JDKInvocationHandler implements InvocationHandler {
         Rainofflower.Message message = requestBuilder.setHeader(header)
                 .setBizRequest(content)
                 .build();
-        Request request = new Request();
         request.setMessage(message);
         Response response = invoker.invoke(request);
         return response.getResult();

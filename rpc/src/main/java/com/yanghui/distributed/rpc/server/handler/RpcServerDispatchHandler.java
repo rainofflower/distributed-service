@@ -5,6 +5,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolStringList;
+import com.yanghui.distributed.rpc.EchoService;
 import com.yanghui.distributed.rpc.EchoServiceImpl;
 import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.common.cache.ReflectCache;
@@ -29,6 +30,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class RpcServerDispatchHandler extends ChannelInboundHandlerAdapter {
 
     public final ThreadPoolExecutor dispatchExecutor;
+
+    private static final EchoService SERVICE = new EchoServiceImpl();
 
     public RpcServerDispatchHandler(ThreadPoolExecutor dispatchExecutor){
         this.dispatchExecutor = dispatchExecutor;
@@ -61,7 +64,7 @@ public class RpcServerDispatchHandler extends ChannelInboundHandlerAdapter {
                 Rainofflower.Header.Builder headBuilder = Rainofflower.Header.newBuilder();
                 Rainofflower.Header header = headBuilder.setType(Rainofflower.HeadType.BIZ_RESPONSE)
                         .setPriority(1)
-                        .putAttachment("id",message.getHeader().getAttachmentOrThrow("id"))
+                        .putAttachment(RpcConstants.REQUEST_ID,message.getHeader().getAttachmentOrThrow(RpcConstants.REQUEST_ID))
                         .putAttachment("回复", "yanghui")
                         .putAttachment("address", "sz-lib")
                         .build();
@@ -69,7 +72,7 @@ public class RpcServerDispatchHandler extends ChannelInboundHandlerAdapter {
                 responseBuilder.setHeader(header);
                 Rainofflower.BizResponse.Builder contentBuilder = Rainofflower.BizResponse.newBuilder();
                 try {
-                    Object result = method.invoke(new EchoServiceImpl(), args);
+                    Object result = method.invoke(SERVICE, args);
                     contentBuilder.setCode(0)
                             .setInfo("成功")
                             .setResult(JSONObject.toJSONString(result));

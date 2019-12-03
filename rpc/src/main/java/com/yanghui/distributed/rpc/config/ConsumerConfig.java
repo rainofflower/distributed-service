@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yanghui.distributed.rpc.config;
 
 import com.yanghui.distributed.rpc.bootstrap.ConsumerBootstrap;
@@ -21,6 +5,7 @@ import com.yanghui.distributed.rpc.client.router.Router;
 import com.yanghui.distributed.rpc.common.util.ClassUtils;
 import com.yanghui.distributed.rpc.common.util.StringUtils;
 import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
+import com.yanghui.distributed.rpc.future.Listener;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,12 +13,11 @@ import java.util.List;
 import static com.yanghui.distributed.rpc.common.RpcConfigs.*;
 import static com.yanghui.distributed.rpc.common.RpcOptions.*;
 
-
 /**
  * 服务消费者配置
  * 
- * @param <T> the type parameter
  * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
+ * @author YangHui
  */
 public class ConsumerConfig<T> implements Serializable {
 
@@ -185,6 +169,11 @@ public class ConsumerConfig<T> implements Serializable {
      */
     protected int                                   concurrents        = getIntValue(CONSUMER_CONCURRENTS);
 
+    /**
+     * 回调模式 接口级别 返回结果listener
+     */
+    protected Listener                              responseListener;
+
     /*---------- 参数配置项结束 ------------*/
 
 
@@ -202,6 +191,15 @@ public class ConsumerConfig<T> implements Serializable {
     public ConsumerConfig<T> setInterfaceName(String interfaceName) {
         this.interfaceName = interfaceName;
         return this;
+    }
+
+    public ConsumerConfig<T> setResponseListener(Listener listener){
+        this.responseListener = listener;
+        return this;
+    }
+
+    public Listener getResponseListener(){
+        return responseListener;
     }
 
     /**

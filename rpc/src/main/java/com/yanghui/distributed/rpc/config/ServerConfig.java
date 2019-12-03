@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.yanghui.distributed.rpc.common.RpcConfigs.*;
-import static com.yanghui.distributed.rpc.common.RpcConstants.CONTEXT_SEP;
 import static com.yanghui.distributed.rpc.common.RpcConstants.DISPATCHER_MESSAGE;
 import static com.yanghui.distributed.rpc.common.RpcOptions.*;
+import static com.yanghui.distributed.rpc.common.util.StringUtils.CONTEXT_SEP;
 
 /**
  * 服务端配置

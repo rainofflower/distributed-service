@@ -1,5 +1,7 @@
 package com.yanghui.distributed.rpc.codec;
 
+import com.yanghui.distributed.rpc.core.exception.ErrorType;
+import com.yanghui.distributed.rpc.core.exception.RpcException;
 import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 import io.netty.buffer.ByteBuf;
@@ -26,17 +28,17 @@ public class RainofflowerProtocolDecoder extends ByteToMessageDecoder {
         //读取crcPrefix
         short crcPrefix = in.readShort();
         if(CRC_PREFIX != crcPrefix){
-            throw new RpcRuntimeException("crc校验失败，rainofflower协议前缀错误！读取到crcPrefix内容："+crcPrefix);
+            throw new RpcException(ErrorType.CLIENT_DESERIALIZE,"crc校验失败，rainofflower协议前缀错误！读取到crcPrefix内容："+crcPrefix);
         }
         //读取majorVersion
         byte majorVersion = in.readByte();
         if(MAJOR_VERSION != majorVersion){
-            throw new RpcRuntimeException("crc校验失败，rainofflower主版本号错误！读取到majorVersion内容："+majorVersion);
+            throw new RpcException(ErrorType.CLIENT_DESERIALIZE,"crc校验失败，rainofflower主版本号错误！读取到majorVersion内容："+majorVersion);
         }
         //读取minorVersion
         byte minorVersion = in.readByte();
         if(MINOR_VERSION != minorVersion){
-            throw new RpcRuntimeException("crc校验失败，rainofflower次版本号错误！读取到minorVersion内容："+minorVersion);
+            throw new RpcException(ErrorType.CLIENT_DESERIALIZE,"crc校验失败，rainofflower次版本号错误！读取到minorVersion内容："+minorVersion);
         }
         int length = in.readInt();
         if(in.readableBytes() < length){
@@ -51,7 +53,12 @@ public class RainofflowerProtocolDecoder extends ByteToMessageDecoder {
             data = new byte[length];
             in.readBytes(data, 0, length);
         }
-        Rainofflower.Message message = Rainofflower.Message.parseFrom(data);
+        Rainofflower.Message message;
+        try{
+            message = Rainofflower.Message.parseFrom(data);
+        }catch (Exception e){
+            throw new RpcException(ErrorType.CLIENT_DESERIALIZE,"消息内容反序列化失败",e);
+        }
         if(message != null){
             out.add(message);
         }
