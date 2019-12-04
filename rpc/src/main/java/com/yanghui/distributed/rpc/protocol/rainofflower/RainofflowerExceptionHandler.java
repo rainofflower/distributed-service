@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RainofflowerExceptionHandler extends CommandHandlerAdapter {
 
     public void handleException(CommandHandlerContext ctx, Throwable throwable){
-        log.info("捕获异常，信息：{}",throwable);
+        log.info("捕获异常，信息：",throwable);
         ctx.fireHandleException(throwable);
     }
 }

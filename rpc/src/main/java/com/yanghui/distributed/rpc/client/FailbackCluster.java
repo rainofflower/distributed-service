@@ -16,12 +16,7 @@ public class FailbackCluster extends Cluster {
     }
 
     @Override
-    public Response sendMsg(ProviderInfo providerInfo, Request request) throws RpcException {
-        return null;
-    }
-
-    @Override
-    public Response invoke(Request request) throws RpcException {
+    public Response doInvoke(Request request) throws RpcException {
         return null;
     }
 }

@@ -3,13 +3,13 @@ package com.yanghui.distributed.rpc.client;
 import com.yanghui.distributed.rpc.common.util.CommonUtils;
 import com.yanghui.distributed.rpc.config.ClientTransportConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * 连接管理器
  * @author YangHui
  */
 @Slf4j
@@ -34,6 +34,11 @@ public class ClientConnectionManager {
         }
     }
 
+    /**
+     * 建立连接。如果连接已经存在，返回存在的连接
+     * @param providerInfo 服务提供者信息
+     * @return  连接
+     */
     public static Connection addConnection(ProviderInfo providerInfo){
         ClientTransportConfig clientTransportConfig = new ClientTransportConfig(providerInfo.getHost(), providerInfo.getPort());
         Connection connection = CONNECTIONS.get(clientTransportConfig);
@@ -46,7 +51,7 @@ public class ClientConnectionManager {
             CONNECTIONS.putIfAbsent(clientTransportConfig, connection);
             return connection;
         }catch (Exception e){
-            log.error("连接 {} 失败，信息：{}",providerInfo,e);
+            log.error("连接 {} 失败，信息：",providerInfo,e);
         }
         return null;
     }

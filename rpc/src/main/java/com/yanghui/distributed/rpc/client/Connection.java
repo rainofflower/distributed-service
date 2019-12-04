@@ -31,8 +31,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 消费者与服务提供者的连接
  * @author YangHui
  */
 @Slf4j
@@ -40,17 +42,34 @@ public class Connection {
 
     public static final AttributeKey<Connection> CONNECTION = AttributeKey.valueOf("connection");
 
+    /**
+     * 连接配置
+     */
     private ClientTransportConfig clientTransportConfig;
 
+    /**
+     * 连接通道
+     */
     private Channel channel;
 
+    /**
+     * 请求id与请求映射
+     */
     private final ConcurrentMap<Integer, InvokeFuture> invokeFutureMap = new ConcurrentHashMap<>();
+
+    /**
+     * 当前正常处理的请求数
+     */
+    protected AtomicInteger currentRequests = new AtomicInteger(0);
 
 
     public Connection(ClientTransportConfig clientTransportConfig){
         this.clientTransportConfig = clientTransportConfig;
     }
 
+    /**
+     * 连接服务端
+     */
     public void connect(){
         Bootstrap b = new Bootstrap();
         final RpcClientHandler rpcClientHandler = new RpcClientHandler();
@@ -72,6 +91,19 @@ public class Connection {
         channel.attr(CONNECTION).set(this);
     }
 
+    /**
+     * 关闭连接
+     */
+    public void disconnect(){
+        if(channel != null){
+            channel.close().addListener((ChannelFuture future) ->{
+                if(future.isSuccess()){
+                    log.info("连接已关闭，地址：{}", channel.remoteAddress());
+                }
+            });
+        }
+    }
+
     public InvokeFuture getInvokeFuture(int id){
        return invokeFutureMap.get(id);
     }
@@ -85,8 +117,10 @@ public class Connection {
     }
 
     public void oneWaySend(Request request){
-        buildBizMessage(request, true);
+        RpcInvokeContext invokeContext = RpcInvokeContext.getContext();
         try {
+            beforeSend(request);
+            buildBizMessage(request, true);
             channel.writeAndFlush(request.getMessage()).addListener((ChannelFuture future) -> {
                 if(!future.isSuccess()){
                     Channel channel = future.channel();
@@ -99,60 +133,70 @@ public class Connection {
             if(channel != null){
                 log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),e);
             }
+        }finally {
+            afterSend(request,invokeContext);
         }
     }
 
     public Response syncSend(Request request, long timeout) {
-        buildBizMessage(request, false);
-        InvokeFuture invokeFuture = RpcInvokeContext.getContext().getInvokeFuture();
-        Connection connection = channel.attr(Connection.CONNECTION).get();
-        connection.putInvokeFuture(invokeFuture.getInvokeId(), invokeFuture);
+        RpcInvokeContext invokeContext = RpcInvokeContext.getContext();
         try {
-            channel.writeAndFlush(request.getMessage()).addListener((ChannelFuture future) -> {
-                //发送失败
-                if (!future.isSuccess()) {
-                    InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
-                    if(f != null){
-                        f.setFailure(future.cause());
-                        Channel channel = future.channel();
-                        if(channel != null){
-                            log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),future.cause());
+            beforeSend(request);
+            buildBizMessage(request, false);
+            InvokeFuture invokeFuture = invokeContext.getInvokeFuture();
+            Connection connection = channel.attr(Connection.CONNECTION).get();
+            connection.putInvokeFuture(invokeFuture.getInvokeId(), invokeFuture);
+            try {
+                channel.writeAndFlush(request.getMessage()).addListener((ChannelFuture future) -> {
+                    //发送失败
+                    if (!future.isSuccess()) {
+                        InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
+                        if (f != null) {
+                            f.setFailure(future.cause());
+                            Channel channel = future.channel();
+                            if (channel != null) {
+                                log.error("发送失败，地址：{}, 异常：", channel.remoteAddress(), future.cause());
+                            }
                         }
                     }
+                });
+            } catch (Exception e) {
+                InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
+                if (f != null) {
+                    f.setFailure(e);
                 }
-            });
-        }catch (Exception e){
-            InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
-            if(f != null){
-                f.setFailure(e);
+                if (channel != null) {
+                    log.error("发送失败，地址：{}, 异常：", channel.remoteAddress(), e);
+                }
             }
-            if(channel != null){
-                log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),e);
+            Object result = null;
+            try {
+                result = invokeFuture.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (ExecutionException e) {
+                //处理失败
+                return new Response()
+                        .setCause(e)
+                        .setStatus(ResponseStatus.ERROR);
+            } catch (TimeoutException e) {
+                //超时
+                return new Response()
+                        .setStatus(ResponseStatus.TIMEOUT);
             }
-        }
-        Object result = null;
-        try {
-            result = invokeFuture.get(timeout, TimeUnit.MILLISECONDS);
-        } catch (ExecutionException e) {
-            //处理失败
             return new Response()
-                    .setCause(e)
-                    .setStatus(ResponseStatus.ERROR);
-        } catch (TimeoutException e) {
-            //超时
-            return new Response()
-                    .setStatus(ResponseStatus.TIMEOUT);
+                    .setResult(result);
+        }finally {
+            afterSend(request, invokeContext);
         }
-        return new Response()
-                .setResult(result);
     }
 
     public void asyncSend(Request request, long timeout){
-        buildBizMessage(request, false);
-        InvokeFuture invokeFuture = RpcInvokeContext.getContext().getInvokeFuture();
+        RpcInvokeContext invokeContext = RpcInvokeContext.getContext();
+        InvokeFuture invokeFuture = invokeContext.getInvokeFuture();
         Connection connection = channel.attr(Connection.CONNECTION).get();
-        connection.putInvokeFuture(invokeFuture.getInvokeId(), invokeFuture);
         try {
+            beforeSend(request);
+            buildBizMessage(request, false);
+            connection.putInvokeFuture(invokeFuture.getInvokeId(), invokeFuture);
             ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("future-requestId-" + request.getId() + "-timeout-monitor"));
             invokeFuture.setScheduleExecutor(executor);
             executor.schedule(()->{
@@ -185,7 +229,36 @@ public class Connection {
             if(channel != null){
                 log.error("发送失败，地址：{}, 异常：",channel.remoteAddress(),e);
             }
+        }finally {
+            afterSend(request, invokeContext);
         }
+    }
+
+    /**
+     * 发送请求之前的处理
+     * @param request 请求
+     */
+    protected void beforeSend(Request request){
+        currentRequests.incrementAndGet();
+        //other
+    }
+
+    /**
+     * 发送请求之后的处理
+     * @param request 请求
+     * @param invokeContext 考虑到异步线程切换，故多传一个执行线程上下文
+     */
+    protected void afterSend(Request request, RpcInvokeContext invokeContext){
+        currentRequests.decrementAndGet();
+        //other
+    }
+
+    /**
+     * 当前请求数
+     * @return
+     */
+    public int currentRequests(){
+        return currentRequests.get();
     }
 
     /**

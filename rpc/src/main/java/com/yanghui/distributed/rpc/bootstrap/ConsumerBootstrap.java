@@ -1,13 +1,16 @@
 package com.yanghui.distributed.rpc.bootstrap;
 
-import com.yanghui.distributed.rpc.client.Cluster;
-import com.yanghui.distributed.rpc.client.FailoverCluster;
+import com.yanghui.distributed.rpc.client.*;
+import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.common.util.ClassLoaderUtils;
 import com.yanghui.distributed.rpc.common.util.ClassTypeUtils;
+import com.yanghui.distributed.rpc.common.util.StringUtils;
 import com.yanghui.distributed.rpc.config.ConsumerConfig;
 import com.yanghui.distributed.rpc.proxy.jdk.JDKInvocationHandler;
 
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author YangHui
@@ -42,6 +45,32 @@ public class ConsumerBootstrap<T> {
     }
 
     /**
+     * 根据订阅配置，获取服务提供者分组列表
+     * directUrl格式： ip1:port1,ip2:port2 (使用英文逗号 , 或者分号 ; 分隔)
+     *
+     * @return 服务提供者分组列表
+     */
+    public List<ProviderGroup> subscribe(){
+        List<ProviderGroup> providerGroupList = new ArrayList<>();
+        String directUrl = consumerConfig.getDirectUrl();
+        //直连
+        if(StringUtils.isNotBlank(directUrl)){
+            List<ProviderInfo> providerList = new ArrayList<>();
+            String[] providerStrs = StringUtils.splitWithCommaOrSemicolon(directUrl);
+            for(String providerStr : providerStrs){
+                ProviderInfo providerInfo = convert2ProviderInfo(providerStr);
+                providerList.add(providerInfo);
+            }
+            providerGroupList.add(new ProviderGroup(RpcConstants.ADDRESS_DIRECT_GROUP,providerList));
+        }
+        //注册中心获取
+        else{
+//            consumerConfig
+        }
+        return providerGroupList;
+    }
+
+    /**
      * 调用一个服务
      *
      * @return 代理类
@@ -54,9 +83,21 @@ public class ConsumerBootstrap<T> {
             if(proxyInstance != null){
                 return proxyInstance;
             }
-            JDKInvocationHandler invocationHandler = new JDKInvocationHandler();
-            Cluster cluster = new FailoverCluster(this);
+            Cluster cluster;
+            String clusterType = consumerConfig.getCluster();
+            switch (clusterType){
+                case RpcConstants.CLUSTER_TYPE_FAILOVER:
+                    cluster = new FailoverCluster(this);
+                    break;
+                case RpcConstants.CLUSTER_TYPE_FAILFAST:
+                    cluster = new FailfastCluster(this);
+                    break;
+                 default:
+                     //默认失败转移
+                     cluster = new FailoverCluster(this);
+            }
             cluster.init();
+            JDKInvocationHandler invocationHandler = new JDKInvocationHandler();
             invocationHandler.setInvoker(cluster);
             Class interfaceClass = ClassTypeUtils.getClass(consumerConfig.getInterfaceName());
             ClassLoader classLoader = ClassLoaderUtils.getCurrentClassLoader();
@@ -64,5 +105,16 @@ public class ConsumerBootstrap<T> {
             return proxyInstance;
         }
     }
+
+    /**
+     * ip:port 字符串转 providerInfo
+     * @param str
+     * @return
+     */
+    public ProviderInfo convert2ProviderInfo(String str){
+        String[] strings = StringUtils.split(str, ":");
+        return new ProviderInfo(strings[0], Integer.parseInt(strings[1]));
+    }
+
 
 }

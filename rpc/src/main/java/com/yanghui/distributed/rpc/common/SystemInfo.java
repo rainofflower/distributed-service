@@ -47,6 +47,11 @@ public class SystemInfo {
      */
     private static boolean IS_MAC;
 
+    /**
+     * 机器逻辑核心数
+     */
+    public static final int CORES = Runtime.getRuntime().availableProcessors();
+
     static {
         boolean[] os = parseOSName();
         IS_WINDOWS = os[0];

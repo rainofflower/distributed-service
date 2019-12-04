@@ -29,11 +29,12 @@ public class RpcClientTest {
 
     public static void main(String... a) {
         try {
-            ConsumerConfig<EchoService> consumerConfigSync = new ConsumerConfig<EchoService>();
-            consumerConfigSync.setInvokeType(RpcConstants.INVOKER_TYPE_SYNC)
+            ConsumerConfig<EchoService> consumerConfigSync = new ConsumerConfig<EchoService>()
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_SYNC)
                     .setProtocol(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)
                     .setInterfaceName(EchoService.class.getName())
-                    .setTimeout(2000);
+                    .setTimeout(2000)
+                    .setDirectUrl("localhost:8200");
             EchoService echoServiceSync = consumerConfigSync.refer();
             try {
                 String result = echoServiceSync.echo("sync调用");
@@ -56,21 +57,23 @@ public class RpcClientTest {
                 log.info("发生错误: ",e);
             }
 
-            ConsumerConfig<EchoService> consumerConfigFuture = new ConsumerConfig<EchoService>();
-            consumerConfigFuture.setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
+            ConsumerConfig<EchoService> consumerConfigFuture = new ConsumerConfig<EchoService>()
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_FUTURE)
                     .setProtocol(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)
                     .setInterfaceName(EchoService.class.getName())
-                    .setTimeout(10000);
+                    .setTimeout(10000)
+                    .setDirectUrl("localhost:8201");
             EchoService echoServiceFuture = consumerConfigFuture.refer();
             echoServiceFuture.echo("future调用");
             String sFuture = (String)ResponseFuture.getResponse(5000, TimeUnit.MILLISECONDS, true);
             log.info("结果：{}",sFuture);
 
-            ConsumerConfig<EchoService> consumerConfigCallback = new ConsumerConfig<EchoService>();
-            consumerConfigCallback.setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
+            ConsumerConfig<EchoService> consumerConfigCallback = new ConsumerConfig<EchoService>()
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
                     .setProtocol(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)
                     .setInterfaceName(EchoService.class.getName())
                     .setTimeout(3000)
+                    .setDirectUrl("localhost:8200")
                     .setResponseListener(new Listener() {
                         @Override
                         public void operationComplete(Future future) throws Exception {
@@ -92,10 +95,11 @@ public class RpcClientTest {
             EchoService echoServiceCallback = consumerConfigCallback.refer();
             echoServiceCallback.echo("callback调用");
 
-            ConsumerConfig<EchoService> consumerConfigOneWay = new ConsumerConfig<EchoService>();
-            consumerConfigOneWay.setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
+            ConsumerConfig<EchoService> consumerConfigOneWay = new ConsumerConfig<EchoService>()
+                    .setInvokeType(RpcConstants.INVOKER_TYPE_ONEWAY)
                     .setProtocol(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)
-                    .setInterfaceName(EchoService.class.getName());
+                    .setInterfaceName(EchoService.class.getName())
+                    .setDirectUrl("localhost:8200");
             EchoService echoServiceOneWay = consumerConfigOneWay.refer();
             List<User> users = new ArrayList<>();
             users.add(new User("name1",1));
@@ -111,6 +115,7 @@ public class RpcClientTest {
 
             echoServiceCallback.test2();
             echoServiceCallback.test2();
+            echoServiceCallback.oneWayTest(users,"callback调用");
 
             echoServiceOneWay.oneWayTest(users,"sync调用");
             echoServiceOneWay.oneWayTest(users,"sync调用");

@@ -114,6 +114,22 @@ public class RpcConstants {
     public static final String  INVOKER_TYPE_FUTURE                = "future";
 
     /**
+     * 集群容错方式：失败切换
+     */
+    public static final String CLUSTER_TYPE_FAILOVER                ="failover";
+
+    /**
+     * 集群容错方式：快速失败
+     */
+    public static final String CLUSTER_TYPE_FAILFAST                ="failfast";
+
+    /**
+     * 集群容错方式：失败自动恢复
+     */
+    public static final String CLUSTER_TYPE_FAILBACK                ="failback";
+
+
+    /**
      * Hessian序列化 [不推荐]
      *
      * @deprecated Use {@link #SERIALIZE_HESSIAN2}

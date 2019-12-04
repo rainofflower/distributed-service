@@ -1,6 +1,7 @@
 package com.yanghui.distributed.rpc.core.exception;
 
 /**
+ * rpc异常
  * @author YangHui
  */
 public class RpcException extends RuntimeException{
