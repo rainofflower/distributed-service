@@ -1,10 +1,15 @@
 package com.yanghui.distributed.rpc.common.cache;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import static com.yanghui.distributed.rpc.common.util.StringUtils.METHOD_TYPE_SEP;
 
 /**
  * 反射缓存
@@ -42,9 +47,9 @@ public final class ReflectCache {
         }
         StringBuilder methodSigs = new StringBuilder(128);
         String methodName = method.getName();
-        methodSigs.append(methodName);
-        for(Class<?> paramType : method.getParameterTypes()){
-            methodSigs.append(paramType.getName());
+        methodSigs.append(methodName).append(METHOD_TYPE_SEP);
+        for(Type paramType : method.getGenericParameterTypes()){
+            methodSigs.append(paramType.getTypeName());
         }
         cache.putIfAbsent(methodSigs.toString(), method);
     }
@@ -54,7 +59,7 @@ public final class ReflectCache {
      * 从缓存中获取方法
      * @param interfaceName 接口（服务名）
      * @param methodName 方法名
-     * @param paramTypes 参数列表class名数组
+     * @param paramTypes 参数列表type名数组
      * @return 方法
      */
     public static Method getMethodCache(String interfaceName, String methodName, String[] paramTypes){
@@ -63,12 +68,26 @@ public final class ReflectCache {
             return null;
         }
         StringBuilder methodSigs = new StringBuilder(128);
-        methodSigs.append(methodName);
+        methodSigs.append(methodName).append(METHOD_TYPE_SEP);
         for(String paramType : paramTypes){
             methodSigs.append(paramType);
         }
         return cache.get(methodSigs.toString());
     }
+
+    public static Map<String, Method> getInterfaceMethodMap(String interfaceName){
+        return METHOD_CAHCE.get(interfaceName);
+    }
+
+    public static List<Method> getInterfaceMethods(String interfaceName){
+        ConcurrentHashMap<String, Method> methodMap = METHOD_CAHCE.get(interfaceName);
+        if(methodMap == null){
+            return null;
+        }
+        return new ArrayList<>(methodMap.values());
+    }
+
+
 
     /**
      * 放入Class缓存

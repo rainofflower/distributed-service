@@ -16,6 +16,8 @@ public class ErrorType {
      */
     public static final int SERVER_DESERIALIZE       = 130;
 
+    public static final int SERVER_NOT_FOUND_PROVIDER= 140;
+
     /**
      * 服务端业务异常
      */

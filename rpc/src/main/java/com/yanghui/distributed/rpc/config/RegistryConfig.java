@@ -10,7 +10,7 @@ import static com.yanghui.distributed.rpc.common.RpcOptions.*;
 /**
  * 注册中心配置
  *
- * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
+ *
  */
 public class RegistryConfig implements Serializable {
     /**

@@ -1,20 +1,6 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yanghui.distributed.rpc.config;
+
+import com.yanghui.distributed.rpc.bootstrap.ProviderBootstrap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,14 +16,14 @@ import static com.yanghui.distributed.rpc.common.RpcOptions.*;
  * 服务提供者配置
  *
  * @param <T> the type parameter
- * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
+ *
  */
-public class ProviderConfig<T> implements Serializable {
+public class ProviderConfig<T> extends AbstractInterfaceConfig<T,ProviderConfig<T>> implements Serializable {
 
     /**
      * The constant serialVersionUID.
      */
-    private static final long                                   serialVersionUID    = -3058073881775315962L;
+    private static final long                                   serialVersionUID    = 6442938865924324091L;
 
     /*---------- 参数配置项开始 ------------*/
 
@@ -47,7 +33,7 @@ public class ProviderConfig<T> implements Serializable {
     protected transient T                                       ref;
 
     /**
-     * 配置的协议列表
+     * 配置的协议列表,一个提供者能发布多种协议（一种协议对应一个server）
      */
     protected List<ServerConfig>                                server;
 
@@ -107,12 +93,6 @@ public class ProviderConfig<T> implements Serializable {
      */
     protected int                                               concurrents         = getIntValue(PROVIDER_CONCURRENTS);
 
-    /**
-     * 同一个服务（接口协议uniqueId相同）的最大发布次数，防止由于代码bug导致重复发布。注意：后面的发布可能会覆盖前面的实现，-1表示不检查
-     *
-     * @since 5.2.0
-     */
-    protected int                                               repeatedExportLimit = getIntValue(PROVIDER_REPEATED_EXPORT_LIMIT);
 
     /*---------- 参数配置项结束 ------------*/
 
@@ -121,6 +101,30 @@ public class ProviderConfig<T> implements Serializable {
      */
     protected transient volatile ConcurrentMap<String, Boolean> methodsLimit;
 
+    /**
+     * 服务提供者启动类
+     */
+    protected transient ProviderBootstrap providerBootstrap;
+
+
+    /**
+     * 发布服务
+     */
+    public synchronized void export(){
+        if(providerBootstrap == null){
+            providerBootstrap = new ProviderBootstrap<>(this);
+        }
+        providerBootstrap.export();
+    }
+
+    public ProviderBootstrap getProviderBootstrap() {
+        return providerBootstrap;
+    }
+
+    public ProviderConfig<T> setProviderBootstrap(ProviderBootstrap providerBootstrap) {
+        this.providerBootstrap = providerBootstrap;
+        return this;
+    }
 
     /**
      * Gets ref.
@@ -343,26 +347,6 @@ public class ProviderConfig<T> implements Serializable {
     }
 
     /**
-     * Gets repeated export limit.
-     *
-     * @return the repeated export limit
-     */
-    public int getRepeatedExportLimit() {
-        return repeatedExportLimit;
-    }
-
-    /**
-     * Sets repeated export limit.
-     *
-     * @param repeatedExportLimit the repeated export limit
-     * @return the repeated export limit
-     */
-    public ProviderConfig<T> setRepeatedExportLimit(int repeatedExportLimit) {
-        this.repeatedExportLimit = repeatedExportLimit;
-        return this;
-    }
-
-    /**
      * Gets client timeout.
      *
      * @return the client timeout
@@ -377,7 +361,7 @@ public class ProviderConfig<T> implements Serializable {
      * @param timeout the client timeout
      * @return the client timeout
      */
-    public ProviderConfig setTimeout(int timeout) {
+    public ProviderConfig<T> setTimeout(int timeout) {
         this.timeout = timeout;
         return this;
     }

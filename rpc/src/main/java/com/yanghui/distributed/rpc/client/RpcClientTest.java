@@ -62,7 +62,7 @@ public class RpcClientTest {
                     .setProtocol(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER)
                     .setInterfaceName(EchoService.class.getName())
                     .setTimeout(10000)
-                    .setDirectUrl("localhost:8201");
+                    .setDirectUrl("localhost:8200");
             EchoService echoServiceFuture = consumerConfigFuture.refer();
             echoServiceFuture.echo("future调用");
             String sFuture = (String)ResponseFuture.getResponse(5000, TimeUnit.MILLISECONDS, true);

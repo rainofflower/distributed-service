@@ -16,10 +16,9 @@ import static com.yanghui.distributed.rpc.common.RpcOptions.*;
 /**
  * 服务消费者配置
  * 
- * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
  * @author YangHui
  */
-public class ConsumerConfig<T> implements Serializable {
+public class ConsumerConfig<T> extends AbstractInterfaceConfig<T,ConsumerConfig<T>> implements Serializable {
 
     /**
      * The constant serialVersionUID.
@@ -31,10 +30,6 @@ public class ConsumerConfig<T> implements Serializable {
      */
     protected String                                protocol           = getStringValue(DEFAULT_PROTOCOL);
 
-
-    protected String                                interfaceName;
-
-    protected volatile Class                        proxyClass;
 
     /**
      * 服务消费者启动类
@@ -52,7 +47,7 @@ public class ConsumerConfig<T> implements Serializable {
     protected boolean                               generic;
 
     /**
-     * 是否异步调用
+     * 调用方式
      */
     protected String                                invokeType         = getStringValue(CONSUMER_INVOKE_TYPE);
 
@@ -142,6 +137,11 @@ public class ConsumerConfig<T> implements Serializable {
     protected String                                bootstrap;
 
     /**
+     * 注册中心配置，可配置多个
+     */
+    protected List<RegistryConfig>                   registry;
+
+    /**
      * 等待地址获取时间(毫秒)，-1表示等到拿到地址位置
      */
     protected int                                   addressWait        = getIntValue(CONSUMER_ADDRESS_WAIT);
@@ -182,15 +182,6 @@ public class ConsumerConfig<T> implements Serializable {
             consumerBootstrap = new ConsumerBootstrap(this);
         }
         return consumerBootstrap.refer();
-    }
-
-    public String getInterfaceName() {
-        return interfaceName;
-    }
-
-    public ConsumerConfig<T> setInterfaceName(String interfaceName) {
-        this.interfaceName = interfaceName;
-        return this;
     }
 
     public ConsumerConfig<T> setResponseListener(Listener listener){
@@ -240,28 +231,6 @@ public class ConsumerConfig<T> implements Serializable {
     public ConsumerConfig<T> setDirectUrl(String directUrl) {
         this.directUrl = directUrl;
         return this;
-    }
-
-
-    public Class<?> getProxyClass() {
-        if (proxyClass != null) {
-            return proxyClass;
-        }
-        try {
-            if (StringUtils.isNotBlank(interfaceName)) {
-                this.proxyClass = ClassUtils.forName(interfaceName);
-                if (!proxyClass.isInterface()) {
-                    throw new RpcRuntimeException("consumer.interface:"+
-                            interfaceName+" 需要设置为接口，而不是实现类");
-                }
-            } else {
-                throw new RpcRuntimeException("consumer.interface:"+
-                        interfaceName+" 不能为空");
-            }
-        } catch (RuntimeException t) {
-            throw new IllegalStateException(t.getMessage(), t);
-        }
-        return proxyClass;
     }
 
     /**

@@ -1,5 +1,9 @@
 package com.yanghui.distributed.rpc.handler;
 
+import io.netty.channel.ChannelHandlerContext;
+
+import java.lang.reflect.Method;
+
 /**
  * @author YangHui
  */
@@ -105,6 +109,14 @@ public class CommandHandlerContext {
     public CommandHandlerContext setName(String name){
         this.name = name;
         return this;
+    }
+
+    public ChannelHandlerContext getChannelHandlerContext() {
+        return pipeline.getChannelHandlerContext();
+    }
+
+    public Method getMethod() {
+        return pipeline.getMethod();
     }
 
 }

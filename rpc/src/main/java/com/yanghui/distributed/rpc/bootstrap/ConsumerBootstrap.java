@@ -4,9 +4,13 @@ import com.yanghui.distributed.rpc.client.*;
 import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.common.util.ClassLoaderUtils;
 import com.yanghui.distributed.rpc.common.util.ClassTypeUtils;
+import com.yanghui.distributed.rpc.common.util.CommonUtils;
 import com.yanghui.distributed.rpc.common.util.StringUtils;
 import com.yanghui.distributed.rpc.config.ConsumerConfig;
+import com.yanghui.distributed.rpc.config.RegistryConfig;
 import com.yanghui.distributed.rpc.proxy.jdk.JDKInvocationHandler;
+import com.yanghui.distributed.rpc.registry.Registry;
+import com.yanghui.distributed.rpc.registry.RegistryFactory;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -65,7 +69,14 @@ public class ConsumerBootstrap<T> {
         }
         //注册中心获取
         else{
-//            consumerConfig
+            List<RegistryConfig> registryConfigs = consumerConfig.getRegistry();
+            if(CommonUtils.isNotEmpty(registryConfigs)){
+                for(RegistryConfig registryConfig : registryConfigs){
+                    Registry registry = RegistryFactory.getRegistry(registryConfig);
+                    registry.start();
+                    registry.subscribe(consumerConfig);
+                }
+            }
         }
         return providerGroupList;
     }

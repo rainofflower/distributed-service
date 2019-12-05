@@ -10,8 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class EchoServiceImpl implements EchoService{
 
-    public static EchoService instance = new EchoServiceImpl();
-
     private AtomicInteger id = new AtomicInteger(0);
 
     @Override

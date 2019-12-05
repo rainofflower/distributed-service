@@ -102,7 +102,7 @@ public class ConsumerConnectionHolder {
     /**
      * 与服务提供者建立连接，保存连接
      * 为了快速建立连接，会创建临时线程池，
-     * 创建完成或者超时会关闭连接池
+     * 创建完成或者超时会关闭线程池
      * @param providerList
      */
     protected void addProvider(List<ProviderInfo> providerList){

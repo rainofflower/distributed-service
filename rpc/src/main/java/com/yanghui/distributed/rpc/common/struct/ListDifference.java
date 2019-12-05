@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 比较两个list的不同，列出差异部分：包括左侧独有，右侧独有，双方都有
  *
- * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
+ *
  */
 public class ListDifference<T> {
 

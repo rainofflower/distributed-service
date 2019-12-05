@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 文件操作工具类<br>
  *
- * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
+ *
  */
 public class FileUtils {
 

@@ -5,7 +5,7 @@ import com.yanghui.distributed.rpc.codec.RainofflowerProtocolEncoder;
 import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.common.struct.NamedThreadFactory;
 import com.yanghui.distributed.rpc.config.ServerConfig;
-import com.yanghui.distributed.rpc.server.handler.HeartBeatServerHandler;
+import com.yanghui.distributed.rpc.handler.CommandHandlerPipeline;
 import com.yanghui.distributed.rpc.server.handler.RpcServerDispatchHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -13,11 +13,11 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -39,23 +39,24 @@ public class RpcServer implements Server{
 
     protected EventLoopGroup workerGroup;
 
-    protected ThreadPoolExecutor defaultDispatchThreadPool;
+    protected ThreadPoolExecutor defaultBizThreadPool;
 
+    protected Map<MethodInfo, CommandHandlerPipeline> bizPipelineMap = new ConcurrentHashMap<>();
 
     @Override
     public void init(ServerConfig serverConfig) {
         this.serverConfig = serverConfig;
-        defaultDispatchThreadPool = new ThreadPoolExecutor(serverConfig.getCoreThreads(),
+        defaultBizThreadPool = new ThreadPoolExecutor(serverConfig.getCoreThreads(),
                 serverConfig.getMaxThreads(),
                 serverConfig.getAliveTime(),
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(serverConfig.getQueues()),
-                new NamedThreadFactory("default-dispatch-"+serverConfig.getPort())
+                new NamedThreadFactory("default-biz-pool-"+serverConfig.getPort())
                 );
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup(serverConfig.getIoThreads());
         this.bootstrap = new ServerBootstrap();
-        final RpcServerDispatchHandler rpcDispatchHandler = new RpcServerDispatchHandler(defaultDispatchThreadPool);
+        final RpcServerDispatchHandler rpcDispatchHandler = new RpcServerDispatchHandler(this);
         bootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
@@ -73,7 +74,7 @@ public class RpcServer implements Server{
                             channel.attr(Server.PROTOCOL).set(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER);
                         }
 //                        pipeline.addLast("heartBeatHandler", new HeartBeatServerHandler(serverConfig.getIdleTime()))
-                        pipeline .addLast("rpcDispatchHandler",rpcDispatchHandler);
+                        pipeline.addLast("rpcDispatchHandler",rpcDispatchHandler);
                         InetSocketAddress remoteAddress = channel.remoteAddress();
                         String key = remoteAddress.toString();
                         if(connections.containsKey(key)){
@@ -93,8 +94,20 @@ public class RpcServer implements Server{
     }
 
     @Override
-    public void start() throws InterruptedException {
-        this.channelFuture = this.bootstrap.bind(new InetSocketAddress(serverConfig.getBoundHost(), serverConfig.getPort())).sync();
+    public void start(){
+        this.channelFuture = this.bootstrap.bind(new InetSocketAddress(serverConfig.getBoundHost(), serverConfig.getPort())).syncUninterruptibly();
+    }
+
+    public void registryBizPipeline(MethodInfo methodInfo, CommandHandlerPipeline commandHandlerPipeline){
+        bizPipelineMap.put(methodInfo, commandHandlerPipeline);
+    }
+
+    public CommandHandlerPipeline getBizPipeline(MethodInfo methodInfo){
+        return bizPipelineMap.get(methodInfo);
+    }
+
+    public ThreadPoolExecutor getDefaultBizThreadPool(){
+        return defaultBizThreadPool;
     }
 
     public void waitClose(){

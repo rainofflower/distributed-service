@@ -28,6 +28,7 @@ import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -291,14 +292,13 @@ public class Connection {
                 .build();
         Rainofflower.BizRequest.Builder contentBuilder = Rainofflower.BizRequest.newBuilder();
         Method method = request.getMethod();
-        Class<?>[] parameterTypes = method.getParameterTypes();
+        Type[] parameterTypes = method.getGenericParameterTypes();
         List<String> paramTypeStrList = new ArrayList<>();
         List<String> argsJsonList = new ArrayList<>();
         if(!CommonUtils.isEmpty(parameterTypes)){
             Object[] args = request.getArgs();
             for(int i = 0; i<parameterTypes.length; i++){
-                Class<?> clazz = parameterTypes[i];
-                paramTypeStrList.add(clazz.getName());
+                paramTypeStrList.add(parameterTypes[i].getTypeName());
                 argsJsonList.add(JSONObject.toJSONString(args[i]));
             }
         }

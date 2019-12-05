@@ -5,6 +5,8 @@ import com.yanghui.distributed.rpc.handler.CommandHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * Rainofflower协议异常处理器
+ *
  * @author YangHui
  */
 @Slf4j

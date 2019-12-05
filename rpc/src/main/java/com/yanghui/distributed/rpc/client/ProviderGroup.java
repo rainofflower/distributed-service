@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * One provider group contains one list of some providers.
  *
- * @author <a href="mailto:zhanggeng.zg@antfin.com">GengZhang</a>
  */
 public class ProviderGroup {
 

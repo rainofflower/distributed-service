@@ -3,7 +3,7 @@ package com.yanghui.distributed.rpc.common.util;
 /**
  * 缓存了一些ClassLoader的对应关系，让应用和服务可以找到对应的ClassLoader。
  *
- * @author <a href=mailto:zhanggeng.zg@antfin.com>GengZhang</a>
+ *
  */
 public class ClassLoaderUtils {
 

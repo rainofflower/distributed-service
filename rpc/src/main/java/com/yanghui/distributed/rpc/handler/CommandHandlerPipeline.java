@@ -1,8 +1,10 @@
 package com.yanghui.distributed.rpc.handler;
 
 import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
@@ -18,6 +20,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
  * 关于state
  * 类似于ReadWriteLock，处理业务可以并发执行，
  * 改变pipeline结构的操作将串行执行，迁移线程池也归于其中
+ *
  * @author YangHui
  */
 @Slf4j
@@ -28,6 +31,16 @@ public class CommandHandlerPipeline {
     private volatile CommandHandlerContext tail;
 
     private volatile ThreadPoolExecutor executor;
+
+    /**
+     * netty的ChannelHandlerContext，在接收数据时会设值
+     */
+    private ChannelHandlerContext channelHandlerContext;
+
+    /**
+     * 缓存方法信息
+     */
+    private Method method;
 
     /**
      * pipeline空闲中
@@ -285,6 +298,24 @@ public class CommandHandlerPipeline {
 
     public CommandHandlerPipeline setExecutor(ThreadPoolExecutor executor){
         this.executor = executor;
+        return this;
+    }
+
+    public ChannelHandlerContext getChannelHandlerContext() {
+        return channelHandlerContext;
+    }
+
+    public CommandHandlerPipeline setChannelHandlerContext(ChannelHandlerContext channelHandlerContext) {
+        this.channelHandlerContext = channelHandlerContext;
+        return this;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public CommandHandlerPipeline setMethod(Method method) {
+        this.method = method;
         return this;
     }
 
