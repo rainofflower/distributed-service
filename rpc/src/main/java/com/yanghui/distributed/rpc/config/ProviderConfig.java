@@ -3,10 +3,11 @@ package com.yanghui.distributed.rpc.config;
 import com.yanghui.distributed.rpc.bootstrap.ProviderBootstrap;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.yanghui.distributed.rpc.common.RpcConfigs.*;
@@ -38,6 +39,11 @@ public class ProviderConfig<T> extends AbstractInterfaceConfig<T,ProviderConfig<
     protected List<ServerConfig>                                server;
 
     /**
+     * 接口下的具体方法配置
+     */
+    protected Map<Method, ProviderMethodConfig>                 methodConfigs;
+
+    /**
      * 服务发布延迟,单位毫秒，默认0，配置为-1代表spring加载完毕（通过spring才生效）
      */
     protected int                                               delay               = getIntValue(PROVIDER_DELAY);
@@ -67,10 +73,6 @@ public class ProviderConfig<T> extends AbstractInterfaceConfig<T,ProviderConfig<
      */
     protected int                                               priority            = getIntValue(PROVIDER_PRIORITY);
 
-    /**
-     * 启动器
-     */
-    protected String                                            bootstrap;
 
     /**
      * 自定义线程池
@@ -93,13 +95,6 @@ public class ProviderConfig<T> extends AbstractInterfaceConfig<T,ProviderConfig<
      */
     protected int                                               concurrents         = getIntValue(PROVIDER_CONCURRENTS);
 
-
-    /*---------- 参数配置项结束 ------------*/
-
-    /**
-     * 方法名称：是否可调用
-     */
-    protected transient volatile ConcurrentMap<String, Boolean> methodsLimit;
 
     /**
      * 服务提供者启动类
@@ -164,6 +159,28 @@ public class ProviderConfig<T> extends AbstractInterfaceConfig<T,ProviderConfig<
     public ProviderConfig<T> setServer(List<ServerConfig> server) {
         this.server = server;
         return this;
+    }
+
+    /**
+     * 设置一个方法配置
+     * @param method
+     * @param methodConfig
+     * @return
+     */
+    public ProviderConfig<T> setMethodConfig(Method method, ProviderMethodConfig methodConfig){
+        if(methodConfigs == null){
+            methodConfigs = new ConcurrentHashMap<>();
+        }
+        methodConfigs.put(method, methodConfig);
+        return this;
+    }
+
+    /**
+     * 获取所有的方法配置
+     * @return
+     */
+    public Map<Method, ProviderMethodConfig> getMethodConfigs(){
+        return methodConfigs;
     }
 
     /**
@@ -287,26 +304,6 @@ public class ProviderConfig<T> extends AbstractInterfaceConfig<T,ProviderConfig<
     }
 
     /**
-     * Gets bootstrap.
-     *
-     * @return the bootstrap
-     */
-    public String getBootstrap() {
-        return bootstrap;
-    }
-
-    /**
-     * Sets bootstrap.
-     *
-     * @param bootstrap the bootstrap
-     * @return the bootstrap
-     */
-    public ProviderConfig<T> setBootstrap(String bootstrap) {
-        this.bootstrap = bootstrap;
-        return this;
-    }
-
-    /**
      * Gets executor.
      *
      * @return the executor
@@ -378,26 +375,6 @@ public class ProviderConfig<T> extends AbstractInterfaceConfig<T,ProviderConfig<
             this.server = new ArrayList<ServerConfig>();
         }
         this.server.add(server);
-        return this;
-    }
-
-    /**
-     * 得到可调用的方法名称列表
-     *
-     * @return 可调用的方法名称列表 methods limit
-     */
-    public Map<String, Boolean> getMethodsLimit() {
-        return methodsLimit;
-    }
-
-    /**
-     * Sets methodsLimit.
-     *
-     * @param methodsLimit the methodsLimit
-     * @return the ProviderConfig
-     */
-    public ProviderConfig<T> setMethodsLimit(ConcurrentMap<String, Boolean> methodsLimit) {
-        this.methodsLimit = methodsLimit;
         return this;
     }
 

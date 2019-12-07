@@ -4,9 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.yanghui.distributed.rpc.codec.RainofflowerProtocolDecoder;
 import com.yanghui.distributed.rpc.codec.RainofflowerProtocolEncoder;
 import com.yanghui.distributed.rpc.common.RpcConstants;
+import com.yanghui.distributed.rpc.common.SystemInfo;
 import com.yanghui.distributed.rpc.common.struct.NamedThreadFactory;
 import com.yanghui.distributed.rpc.common.util.CommonUtils;
-import com.yanghui.distributed.rpc.config.ClientTransportConfig;
+import com.yanghui.distributed.rpc.transport.TransportInfo;
 import com.yanghui.distributed.rpc.context.RpcInvokeContext;
 import com.yanghui.distributed.rpc.core.Request;
 import com.yanghui.distributed.rpc.core.Response;
@@ -17,10 +18,7 @@ import com.yanghui.distributed.rpc.future.InvokeFuture;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -34,6 +32,9 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.yanghui.distributed.rpc.common.RpcConfigs.getIntValue;
+import static com.yanghui.distributed.rpc.common.RpcOptions.CONSUMER_CONNECTION_THREADS;
+
 /**
  * 消费者与服务提供者的连接
  * @author YangHui
@@ -44,9 +45,14 @@ public class Connection {
     public static final AttributeKey<Connection> CONNECTION = AttributeKey.valueOf("connection");
 
     /**
-     * 连接配置
+     * io线程池，消费者所有连接共用（当有大量连接时，每个都分配线程池资源将耗尽）
      */
-    private ClientTransportConfig clientTransportConfig;
+    public static final EventLoopGroup EVENT_EXECUTORS = new NioEventLoopGroup(Math.max(SystemInfo.CORES, getIntValue(CONSUMER_CONNECTION_THREADS)));
+
+    /**
+     * 连接信息
+     */
+    private TransportInfo transportInfo;
 
     /**
      * 连接通道
@@ -64,8 +70,8 @@ public class Connection {
     protected AtomicInteger currentRequests = new AtomicInteger(0);
 
 
-    public Connection(ClientTransportConfig clientTransportConfig){
-        this.clientTransportConfig = clientTransportConfig;
+    public Connection(TransportInfo transportInfo){
+        this.transportInfo = transportInfo;
     }
 
     /**
@@ -74,7 +80,7 @@ public class Connection {
     public void connect(){
         Bootstrap b = new Bootstrap();
         final RpcClientHandler rpcClientHandler = new RpcClientHandler();
-        b.group(new NioEventLoopGroup(5))
+        b.group(EVENT_EXECUTORS)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .option(ChannelOption.TCP_NODELAY, true)
@@ -87,8 +93,10 @@ public class Connection {
                                 .addLast(rpcClientHandler);
                     }
                 });
-        ChannelFuture channelFuture = b.connect(clientTransportConfig.getHost(), clientTransportConfig.getPort()).syncUninterruptibly();
+        ChannelFuture channelFuture = b.connect(transportInfo.getHost(), transportInfo.getPort()).syncUninterruptibly();
         channel = channelFuture.channel();
+        //连接成功之后设置连接id到transportInfo中
+        transportInfo.setId(channel.id().asLongText());
         channel.attr(CONNECTION).set(this);
     }
 
@@ -275,8 +283,8 @@ public class Connection {
         return channel;
     }
 
-    public ClientTransportConfig getClientTransportConfig() {
-        return clientTransportConfig;
+    public TransportInfo getTransportInfo() {
+        return transportInfo;
     }
 
     private void buildBizMessage(Request request, boolean oneWay){

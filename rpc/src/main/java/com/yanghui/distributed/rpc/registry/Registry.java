@@ -1,6 +1,7 @@
 package com.yanghui.distributed.rpc.registry;
 
-import com.yanghui.distributed.rpc.client.ProviderGroup;
+import com.yanghui.distributed.rpc.client.MethodProviderGroup;
+import com.yanghui.distributed.rpc.client.MethodProviderInfo;
 import com.yanghui.distributed.rpc.common.base.Destroyable;
 import com.yanghui.distributed.rpc.common.base.Initializable;
 import com.yanghui.distributed.rpc.config.ConsumerConfig;
@@ -64,7 +65,7 @@ public abstract class Registry implements Initializable, Destroyable {
      * @param config Consumer配置
      * @return 当前Provider列表，返回null表示未同步获取到地址
      */
-    public abstract List<ProviderGroup> subscribe(ConsumerConfig config);
+    public abstract List<MethodProviderInfo> subscribe(ConsumerConfig config);
 
     /**
      * 反订阅服务调用者相关配置

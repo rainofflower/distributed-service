@@ -1,21 +1,15 @@
-package com.yanghui.distributed.rpc.client;
+package com.yanghui.distributed.rpc;
 
-import com.yanghui.distributed.rpc.EchoService;
-import com.yanghui.distributed.rpc.User;
 import com.yanghui.distributed.rpc.common.RpcConstants;
-import com.yanghui.distributed.rpc.common.cache.ReflectCache;
 import com.yanghui.distributed.rpc.config.ConsumerConfig;
-import com.yanghui.distributed.rpc.config.ServerConfig;
 import com.yanghui.distributed.rpc.context.RpcInvokeContext;
 import com.yanghui.distributed.rpc.core.ResponseFuture;
 import com.yanghui.distributed.rpc.core.exception.RpcException;
 import com.yanghui.distributed.rpc.future.Future;
 import com.yanghui.distributed.rpc.future.Listener;
-import com.yanghui.distributed.rpc.server.RpcServer;
-import com.yanghui.distributed.rpc.server.Server;
-import com.yanghui.distributed.rpc.server.ServerFactory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -25,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * Created by YangHui on 2019/11/22
  */
 @Slf4j
-public class RpcClientTest {
+public class RpcConsumerTest {
 
     public static void main(String... a) {
         try {
@@ -63,6 +57,7 @@ public class RpcClientTest {
                     .setInterfaceName(EchoService.class.getName())
                     .setTimeout(10000)
                     .setDirectUrl("localhost:8200");
+            Method echo = EchoService.class.getMethod("echo", String.class);
             EchoService echoServiceFuture = consumerConfigFuture.refer();
             echoServiceFuture.echo("future调用");
             String sFuture = (String)ResponseFuture.getResponse(5000, TimeUnit.MILLISECONDS, true);
@@ -119,7 +114,6 @@ public class RpcClientTest {
 
             echoServiceOneWay.oneWayTest(users,"sync调用");
             echoServiceOneWay.oneWayTest(users,"sync调用");
-
         }catch(Exception e){
             e.printStackTrace();
         }

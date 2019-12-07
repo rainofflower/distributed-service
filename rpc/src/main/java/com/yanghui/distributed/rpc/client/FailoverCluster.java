@@ -5,10 +5,6 @@ import com.yanghui.distributed.rpc.core.Request;
 import com.yanghui.distributed.rpc.core.Response;
 import com.yanghui.distributed.rpc.core.exception.RpcException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 /**
  * 集群容错->失败自动切换
  * @author YangHui
@@ -24,7 +20,7 @@ public class FailoverCluster extends Cluster {
      */
     @Override
     public Response doInvoke(Request request) throws RpcException {
-        ProviderInfo providerInfo = select(request);
-        return sendMsg(providerInfo, request);
+        MethodProviderInfo connectionUrl = select(request);
+        return sendMsg(connectionUrl, request);
     }
 }

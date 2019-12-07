@@ -15,7 +15,7 @@ import java.util.List;
  * Created by YangHui on 2019/11/22
  */
 @Slf4j
-public class RpcTest{
+public class RpcProviderTest {
 
     public static void main(String... a) {
         try {

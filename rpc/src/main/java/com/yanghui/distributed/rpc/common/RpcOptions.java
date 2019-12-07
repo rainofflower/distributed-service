@@ -442,6 +442,17 @@ public class RpcOptions {
      * Consumer共享心跳重连线程
      */
     public static final String CONSUMER_SHARE_RECONNECT_THREAD          = "consumer.share.reconnect.thread";
+
+    /**
+     * Consumer共享长连接
+     */
+    public static final String CONSUMER_CONNECTION_REUSE                ="consumer.connection.reuse";
+
+    /**
+     * Consumer连接服务提供者共用的线程池线程数
+     */
+    public static final String CONSUMER_CONNECTION_THREADS              ="consumer.connection.threads";
+
     /**
      * 自定义设置：序列化是否检测Object的类型（父子类检查）
      */

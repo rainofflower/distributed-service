@@ -17,7 +17,7 @@ public class FailfastCluster extends Cluster{
 
     @Override
     public Response doInvoke(Request request) throws RpcException {
-        ProviderInfo providerInfo = select(request);
-        return sendMsg(providerInfo, request);
+        MethodProviderInfo methodProviderInfo = select(request);
+        return sendMsg(methodProviderInfo, request);
     }
 }

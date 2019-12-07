@@ -54,18 +54,18 @@ public class ConsumerBootstrap<T> {
      *
      * @return 服务提供者分组列表
      */
-    public List<ProviderGroup> subscribe(){
-        List<ProviderGroup> providerGroupList = new ArrayList<>();
+    public List<MethodProviderGroup> subscribe(){
+        List<MethodProviderGroup> providerGroupList = new ArrayList<>();
         String directUrl = consumerConfig.getDirectUrl();
         //直连
         if(StringUtils.isNotBlank(directUrl)){
-            List<ProviderInfo> providerList = new ArrayList<>();
+            List<MethodProviderInfo> providerList = new ArrayList<>();
             String[] providerStrs = StringUtils.splitWithCommaOrSemicolon(directUrl);
             for(String providerStr : providerStrs){
-                ProviderInfo providerInfo = convert2ProviderInfo(providerStr);
-                providerList.add(providerInfo);
+                //MethodProviderInfo providerInfo = convert2ProviderInfo(providerStr);
+                //providerList.add(providerInfo);
             }
-            providerGroupList.add(new ProviderGroup(RpcConstants.ADDRESS_DIRECT_GROUP,providerList));
+            //providerGroupList.add(new ProviderGroup(RpcConstants.ADDRESS_DIRECT_GROUP,providerList));
         }
         //注册中心获取
         else{
@@ -122,9 +122,19 @@ public class ConsumerBootstrap<T> {
      * @param str
      * @return
      */
-    public ProviderInfo convert2ProviderInfo(String str){
+    public ConnectionUrl convert2ProviderInfo(String str){
         String[] strings = StringUtils.split(str, ":");
-        return new ProviderInfo(strings[0], Integer.parseInt(strings[1]));
+        return new ConnectionUrl(strings[0], Integer.parseInt(strings[1]));
+    }
+
+    /**
+     * ip:port 字符串转 providerInfo
+     * @param str
+     * @return
+     */
+    public ConnectionUrl convert2MethodProviderInfo(String str){
+        String[] strings = StringUtils.split(str, ":");
+        return new ConnectionUrl(strings[0], Integer.parseInt(strings[1]));
     }
 
 

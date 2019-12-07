@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * 服务端发布的方法
+ * 服务端发布的方法描述
+ *
  * @author YangHui
  */
 public class MethodInfo {

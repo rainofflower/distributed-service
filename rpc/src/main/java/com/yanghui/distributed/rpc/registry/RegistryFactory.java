@@ -45,6 +45,9 @@ public class RegistryFactory {
                     case RpcConstants.REGISTRY_PROTOCOL_ZK:
                         registry = new ZookeeperRegistry(registryConfig);
                         registry.init();
+                    default:
+                        registry = new ZookeeperRegistry(registryConfig);
+                        registry.init();
                 }
                 ALL_REGISTRIES.put(registryConfig, registry);
             }

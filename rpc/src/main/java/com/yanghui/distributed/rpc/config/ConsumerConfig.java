@@ -2,13 +2,14 @@ package com.yanghui.distributed.rpc.config;
 
 import com.yanghui.distributed.rpc.bootstrap.ConsumerBootstrap;
 import com.yanghui.distributed.rpc.client.router.Router;
-import com.yanghui.distributed.rpc.common.util.ClassUtils;
-import com.yanghui.distributed.rpc.common.util.StringUtils;
-import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 import com.yanghui.distributed.rpc.future.Listener;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.yanghui.distributed.rpc.common.RpcConfigs.*;
 import static com.yanghui.distributed.rpc.common.RpcOptions.*;
@@ -30,11 +31,16 @@ public class ConsumerConfig<T> extends AbstractInterfaceConfig<T,ConsumerConfig<
      */
     protected String                                protocol           = getStringValue(DEFAULT_PROTOCOL);
 
+    /**
+     * 具体方法配置
+     */
+    private Map<Method, ConsumerMethodConfig>     methodConfigs;
+
 
     /**
      * 服务消费者启动类
      */
-    private transient ConsumerBootstrap<T>          consumerBootstrap;
+    protected transient ConsumerBootstrap<T>          consumerBootstrap;
 
     /**
      * 直连调用地址
@@ -170,6 +176,11 @@ public class ConsumerConfig<T> extends AbstractInterfaceConfig<T,ConsumerConfig<
     protected int                                   concurrents        = getIntValue(CONSUMER_CONCURRENTS);
 
     /**
+     * 自定义回调线程池
+     */
+    protected transient ThreadPoolExecutor          executor;
+
+    /**
      * 回调模式 接口级别 返回结果listener
      */
     protected Listener                              responseListener;
@@ -231,6 +242,28 @@ public class ConsumerConfig<T> extends AbstractInterfaceConfig<T,ConsumerConfig<
     public ConsumerConfig<T> setDirectUrl(String directUrl) {
         this.directUrl = directUrl;
         return this;
+    }
+
+    /**
+     * 设置一个方法配置
+     * @param method
+     * @param methodConfig
+     * @return
+     */
+    public ConsumerConfig<T> setMethodConfig(Method method, ConsumerMethodConfig methodConfig){
+        if(methodConfigs == null){
+            methodConfigs = new ConcurrentHashMap<>();
+        }
+        methodConfigs.put(method, methodConfig);
+        return this;
+    }
+
+    /**
+     * 获取所有的方法配置
+     * @return
+     */
+    public Map<Method, ConsumerMethodConfig> getMethodConfigs(){
+        return methodConfigs;
     }
 
     /**
@@ -695,6 +728,24 @@ public class ConsumerConfig<T> extends AbstractInterfaceConfig<T,ConsumerConfig<
         return this;
     }
 
+    /**
+     * Gets executor.
+     *
+     * @return the executor
+     */
+    public ThreadPoolExecutor getExecutor() {
+        return executor;
+    }
 
+    /**
+     * Sets executor.
+     *
+     * @param executor the executor
+     * @return the executor
+     */
+    public ConsumerConfig<T> setExecutor(ThreadPoolExecutor executor) {
+        this.executor = executor;
+        return this;
+    }
 
 }

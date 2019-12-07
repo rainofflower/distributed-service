@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.yanghui.distributed.rpc.common.RpcConfigs.getBooleanValue;
+import static com.yanghui.distributed.rpc.common.RpcOptions.CONSUMER_CONNECTION_REUSE;
+
 /**
  * 消费者 集群容错、服务路由
  * @author YangHui
@@ -53,10 +56,15 @@ public abstract class Cluster implements Invoker {
     }
 
     public void init(){
-        consumerConnectionHolder = new ConsumerConnectionHolder(consumerBootstrap);
-        List<ProviderGroup> all = consumerBootstrap.subscribe();
+        boolean reuse = getBooleanValue(CONSUMER_CONNECTION_REUSE);
+        if(reuse){
+            consumerConnectionHolder = new ReuseConsumerConnectionHolder(consumerBootstrap);
+        }else{
+            consumerConnectionHolder = new AloneConsumerConnectionHolder(consumerBootstrap);
+        }
+        List<MethodProviderInfo> all = consumerBootstrap.subscribe();
         if(CommonUtils.isNotEmpty(all)){
-            updateAllProviders(all);
+            updateAllMethodProviders(all);
         }
     }
 
@@ -91,15 +99,15 @@ public abstract class Cluster implements Invoker {
 
     /**
      * 往指定提供者发送消息
-     * @param providerInfo 提供者信息
+     * @param methodProviderInfo 提供者信息
      * @param request 请求
      * @return
      * @throws RpcException
      */
-    public Response sendMsg(ProviderInfo providerInfo, Request request) throws RpcException{
+    public Response sendMsg(MethodProviderInfo methodProviderInfo, Request request) throws RpcException{
         RpcInvokeContext invokeContext = RpcInvokeContext.getContext();
         long timeout = invokeContext.getTimeout();
-        Connection connection = consumerConnectionHolder.getConnection(providerInfo);
+        Connection connection = consumerConnectionHolder.getConnection(methodProviderInfo);
         try {
             String invokeType = request.getInvokeType();
             Response response;
@@ -164,19 +172,19 @@ public abstract class Cluster implements Invoker {
      * @param request 将要发送的请求
      * @return 将要调用的服务提供者
      */
-    public ProviderInfo select(Request request){
-        Set<ProviderInfo> providerSet = consumerConnectionHolder.currentProviderList();
+    public MethodProviderInfo select(Request request){
+        Set<MethodProviderInfo> providerSet = consumerConnectionHolder.currentMethodProviderList();
         if(CommonUtils.isEmpty(providerSet)){
             throw new RouteException("服务接口："+consumerConfig.getInterfaceName()+" 路由失败");
         }
-        List<ProviderInfo> providerList = new ArrayList<>(providerSet);
-        ProviderInfo providerInfo = providerList.get(0);
-        return providerInfo;
+        List<MethodProviderInfo> providerList = new ArrayList<>(providerSet);
+        MethodProviderInfo methodProviderInfo = providerList.get(0);
+        return methodProviderInfo;
     }
 
 
-    public void updateAllProviders(List<ProviderGroup> providerGroups) {
-        consumerConnectionHolder.updateAllProviders(providerGroups);
+    public void updateAllMethodProviders(List<MethodProviderInfo> methodProviderInfoList) {
+        consumerConnectionHolder.updateAllMethodProviders(methodProviderInfoList);
     }
 
     public ConsumerBootstrap getConsumerBootstrap() {

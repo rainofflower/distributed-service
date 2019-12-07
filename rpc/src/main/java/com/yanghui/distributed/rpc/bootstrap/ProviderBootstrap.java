@@ -5,6 +5,7 @@ import com.yanghui.distributed.rpc.common.cache.ReflectCache;
 import com.yanghui.distributed.rpc.common.util.CommonUtils;
 import com.yanghui.distributed.rpc.common.util.StringUtils;
 import com.yanghui.distributed.rpc.config.ProviderConfig;
+import com.yanghui.distributed.rpc.config.ProviderMethodConfig;
 import com.yanghui.distributed.rpc.config.RegistryConfig;
 import com.yanghui.distributed.rpc.config.ServerConfig;
 import com.yanghui.distributed.rpc.handler.CommandHandler;
@@ -19,6 +20,8 @@ import com.yanghui.distributed.rpc.server.Server;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 提供者启动器
@@ -50,12 +53,13 @@ public class ProviderBootstrap<T> {
         for(ServerConfig serverConfig : serverConfigs){
             Server server = serverConfig.buildIfAbsent();
             server.start();
-            Class<?> proxyClass = providerConfig.getProxyClass();
+            Class<T> proxyClass = providerConfig.getProxyClass();
             String interfaceName = providerConfig.getInterfaceName();
             //只发布public方法
             Method[] methods = proxyClass.getMethods();
             String excludeMethodStr = providerConfig.getExclude();
             String[] excludeMethods = StringUtils.splitWithCommaOrSemicolon(excludeMethodStr);
+            Map<Method, ProviderMethodConfig> methodConfigs = providerConfig.getMethodConfigs();
             nextMethod:
             for(Method method : methods){
                 String methodName = method.getName();
@@ -85,6 +89,31 @@ public class ProviderBootstrap<T> {
                                 .addLast(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER+"#defaultHandler",rainofflowerRpcHandler)
                                 .addLast(RpcConstants.PROTOCOL_TYPE_RAINOFFLOWER+"#defaultExceptionHandler",rainofflowerExceptionHandler);
                 }
+                bizPipeline.setMethod(method);
+                ThreadPoolExecutor executor;
+                ProviderMethodConfig methodConfig = methodConfigs.get(method);
+                if(methodConfig != null){
+                    ThreadPoolExecutor methodExecutor = methodConfig.getExecutor();
+                    if(methodExecutor != null){
+                        executor = methodExecutor;
+                    }else{
+                        ThreadPoolExecutor providerExecutor = providerConfig.getExecutor();
+                        if(providerExecutor != null){
+                            executor = providerExecutor;
+                        }else{
+                            executor = server.getDefaultBizThreadPool();
+                        }
+                    }
+                }else{
+                    ThreadPoolExecutor providerExecutor = providerConfig.getExecutor();
+                    if(providerExecutor != null){
+                        executor = providerExecutor;
+                    }else{
+                        executor = server.getDefaultBizThreadPool();
+                    }
+                }
+                //设置执行当前方法的线程池
+                bizPipeline.setExecutor(executor);
                 Type[] parameterTypes = method.getGenericParameterTypes();
                 int paramCount = parameterTypes.length;
                 String[] paramTypes = new String[paramCount];
@@ -95,10 +124,7 @@ public class ProviderBootstrap<T> {
                         .setMethodName(methodName)
                         .setInterfaceName(interfaceName)
                         .setParamTypes(paramTypes);
-                bizPipeline
-                        .setMethod(method)
-                        //设置执行当前方法的线程池，可配置，可迁移
-                       .setExecutor(server.getDefaultBizThreadPool());
+                //注册当前方法业务处理的pipeline
                 server.registryBizPipeline(methodInfo, bizPipeline);
             }
         }
@@ -106,6 +132,7 @@ public class ProviderBootstrap<T> {
             //需要注册
             List<RegistryConfig> registryConfigs = providerConfig.getRegistry();
             if(CommonUtils.isNotEmpty(registryConfigs)){
+                //遍历多种注册中心
                 for(RegistryConfig registryConfig : registryConfigs){
                     //初始化注册中心
                     //某一个注册中心初始化失败就会抛出异常

@@ -1,10 +1,10 @@
 package com.yanghui.distributed.rpc.config;
 
 import com.yanghui.distributed.rpc.common.util.ClassTypeUtils;
-import com.yanghui.distributed.rpc.common.util.ClassUtils;
 import com.yanghui.distributed.rpc.common.util.StringUtils;
 import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -25,19 +25,19 @@ public abstract class AbstractInterfaceConfig<T, S extends AbstractInterfaceConf
     protected String interfaceName;
 
     /**
+     * 接口版本
+     */
+    protected String version = getStringValue(DEFAULT_VERSION);
+
+    /**
      * 接口对应的class
      */
-    protected volatile Class proxyClass;
+    protected transient volatile Class proxyClass;
 
     /**
      * 注册中心配置，可配置多个
      */
-    protected List<RegistryConfig> registry;
-
-    /**
-     * 方法配置，可配置多个
-     */
-    protected Map<String, MethodConfig> methods;
+    protected transient List<RegistryConfig> registry;
 
     /**
      * 默认序列化
@@ -54,17 +54,7 @@ public abstract class AbstractInterfaceConfig<T, S extends AbstractInterfaceConf
      */
     protected boolean subscribe  = getBooleanValue(SERVICE_SUBSCRIBE);
 
-    /**
-     * 接口分配的群组
-     */
-    protected String group = getStringValue(DEFAULT_GROUP);
-
-    /**
-     * 接口版本
-     */
-    protected String version = getStringValue(DEFAULT_VERSION);
-
-    public Class<?> getProxyClass() {
+    public Class<T> getProxyClass() {
         if (proxyClass != null) {
             return proxyClass;
         }
@@ -95,15 +85,6 @@ public abstract class AbstractInterfaceConfig<T, S extends AbstractInterfaceConf
         return (S)this;
     }
 
-    public String getGroup() {
-        return group;
-    }
-
-    public S setGroup(String group) {
-        this.group = group;
-        return (S)this;
-    }
-
     public String getVersion() {
         return version;
     }
@@ -119,15 +100,6 @@ public abstract class AbstractInterfaceConfig<T, S extends AbstractInterfaceConf
 
     public S setRegistry(List<RegistryConfig> registry) {
         this.registry = registry;
-        return (S)this;
-    }
-
-    public Map<String, MethodConfig> getMethods() {
-        return methods;
-    }
-
-    public S setMethods(Map<String, MethodConfig> methods) {
-        this.methods = methods;
         return (S)this;
     }
 

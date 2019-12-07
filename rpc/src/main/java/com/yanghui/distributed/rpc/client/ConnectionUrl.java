@@ -3,21 +3,23 @@ package com.yanghui.distributed.rpc.client;
 import java.util.Objects;
 
 /**
+ * 连接地址
+ *
  * @author YangHui
  */
-public class ProviderInfo {
+public class ConnectionUrl {
 
     /**
      * The Ip.
      */
-    private String host;
+    protected String host;
 
     /**
      * The Port.
      */
-    private int port;
+    protected int port;
 
-    public ProviderInfo() {
+    public ConnectionUrl() {
 
     }
 
@@ -27,7 +29,7 @@ public class ProviderInfo {
      * @param host the host
      * @param port the port
      */
-    public ProviderInfo(String host, int port) {
+    public ConnectionUrl(String host, int port) {
         this.host = host;
         this.port = port;
     }
@@ -36,7 +38,7 @@ public class ProviderInfo {
         return port;
     }
 
-    public ProviderInfo setPort(int port) {
+    public ConnectionUrl setPort(int port) {
         this.port = port;
         return this;
     }
@@ -45,7 +47,7 @@ public class ProviderInfo {
         return host;
     }
 
-    public ProviderInfo setHost(String host) {
+    public ConnectionUrl setHost(String host) {
         this.host = host;
         return this;
     }
@@ -54,7 +56,7 @@ public class ProviderInfo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProviderInfo that = (ProviderInfo) o;
+        ConnectionUrl that = (ConnectionUrl) o;
         return port == that.port &&
                 host.equals(that.host);
     }
@@ -66,7 +68,7 @@ public class ProviderInfo {
 
     @Override
     public String toString() {
-        return "ProviderInfo{" +
+        return "ConnectionUrl{" +
                 "host='" + host + '\'' +
                 ", port=" + port +
                 '}';
