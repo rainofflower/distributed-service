@@ -1,7 +1,5 @@
 package com.yanghui.distributed.rpc.transport;
 
-import com.yanghui.distributed.rpc.client.ConnectionUrl;
-
 import java.util.Objects;
 
 /**
@@ -9,22 +7,41 @@ import java.util.Objects;
  *
  * @author YangHui
  */
-public class TransportInfo extends ConnectionUrl {
+public class TransportInfo {
 
     /**
      * 连接id,全局唯一
      */
     private String              id;
 
+    /**
+     * The Ip.
+     */
+    protected String host;
+
+    /**
+     * The Port.
+     */
+    protected int port;
+
     public TransportInfo(){}
 
     public TransportInfo(String host, int port){
-        super(host, port);
+        this.host = host;
+        this.port = port;
+    }
+
+    public String getHost() {
+        return host;
     }
 
     public TransportInfo setHost(String host) {
         this.host = host;
         return this;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     public TransportInfo setPort(int port) {

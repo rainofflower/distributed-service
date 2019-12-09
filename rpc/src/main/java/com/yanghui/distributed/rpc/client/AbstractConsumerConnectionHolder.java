@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 /**
+ * 消费者方法级连接
  * @author YangHui
  */
 @Slf4j
@@ -25,7 +26,7 @@ public abstract class AbstractConsumerConnectionHolder implements ConsumerConnec
 
     protected ConsumerConfig consumerConfig;
 
-    protected ConcurrentMap<MethodProviderInfo, Connection> connections = new ConcurrentHashMap<>();
+    protected ConcurrentMap<MethodInfo, ConcurrentMap<MethodProviderInfo, Connection>> connections = new ConcurrentHashMap<>();
 
     public AbstractConsumerConnectionHolder(ConsumerBootstrap consumerBootstrap){
         this.consumerBootstrap = consumerBootstrap;
@@ -35,51 +36,41 @@ public abstract class AbstractConsumerConnectionHolder implements ConsumerConnec
     protected abstract void addConnection(MethodProviderInfo methodProviderInfo);
 
     public Connection getConnection(MethodProviderInfo methodProviderInfo){
-        return connections.get(methodProviderInfo);
+        ConcurrentMap<MethodProviderInfo, Connection> map = connections.get(methodProviderInfo.methodProviderInfo2MethodInfo());
+        if(map == null){
+            return null;
+        }else{
+            return map.get(methodProviderInfo);
+        }
     }
 
     /**
-     * 当前提供者列表,方法级别
+     * 当前某个方法的提供者列表
      *
      * 后面需考虑ConcurrentHashMap的遍历读取弱一致性 weakly consistent
      * @return
      */
-    public Set<MethodProviderInfo> currentMethodProviderList(){
-        return connections.keySet();
+    public Set<MethodProviderInfo> currentMethodProviderList(MethodInfo methodInfo){
+        ConcurrentMap<MethodProviderInfo, Connection> map = connections.get(methodInfo);
+        if(map == null){
+            return null;
+        }else{
+            return map.keySet();
+        }
     }
 
     /**
-     * 当前连接列表
-     * 注意，当允许服务提供者共享连接时,可能有重复的连接
-     * @return 可能存在重复的连接列表
+     * 当前某个方法的提供者连接列表
+     * @param methodInfo
+     * @return
      */
-    public List<Connection> currentConnectionList(){
-        return new ArrayList<>(connections.values());
+    public List<Connection> currentConnectionList(MethodInfo methodInfo){
+        ConcurrentMap<MethodProviderInfo, Connection> map = connections.get(methodInfo);
+        if(map == null){
+            return null;
+        }else{
+            return new ArrayList<>(map.values());
+        }
     }
-
-    /**
-     * 批量与服务提供者建立连接，保存连接
-     * @param methodProviderInfoList
-     */
-    protected abstract void addMethodProviders(List<MethodProviderInfo> methodProviderInfoList);
-
-    /**
-     * 单个连接的建立，保存
-     * @param methodProviderInfo
-     */
-    protected abstract void addMethodProvider(MethodProviderInfo methodProviderInfo);
-
-    /**
-     * 批量关闭并移除指定服务提供者
-     * @param methodProviderInfoList
-     */
-    protected abstract void removeMethodProviders(List<MethodProviderInfo> methodProviderInfoList);
-
-    /**
-     * 单个连接的关闭并移除
-     * @param methodProviderInfo
-     */
-    protected abstract void removeMethodProvider(MethodProviderInfo methodProviderInfo);
-
 
 }

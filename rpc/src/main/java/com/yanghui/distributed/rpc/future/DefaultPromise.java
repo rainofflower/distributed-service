@@ -41,27 +41,27 @@ public class DefaultPromise<T> implements Promise<T> {
     /**
      * 结果
      */
-    private volatile T result;
+    protected volatile T result;
 
     /**
      * 异常
      */
-    private volatile Throwable cause;
+    protected volatile Throwable cause;
 
     /**
      * 回调线程池
      */
-    private Executor callbackExecutor;
+    protected Executor callbackExecutor;
 
     /**
      * 具体的任务
      */
-    private Callable<T> callable;
+    protected Callable<T> callable;
 
     /**
      * 监听器（回调逻辑）
      */
-    private List<Listener> listeners;
+    protected List<Listener> listeners;
 
     /**
      * 无参构造器，使用这个构造方法时promise仅当future用

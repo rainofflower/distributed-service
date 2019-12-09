@@ -80,6 +80,8 @@ public class RpcConstants {
     public static final Charset DEFAULT_CHARSET                    = Charset
                                                                        .forName(getStringValue(RpcOptions.DEFAULT_CHARSET));
 
+    public static final String DEFAULT_VERSION                     ="1.0";
+
     /**
      * 调用方式：同步调用
      */

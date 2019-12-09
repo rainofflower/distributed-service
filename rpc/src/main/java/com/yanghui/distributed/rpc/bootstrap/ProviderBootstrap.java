@@ -14,11 +14,10 @@ import com.yanghui.distributed.rpc.protocol.rainofflower.RainofflowerExceptionHa
 import com.yanghui.distributed.rpc.protocol.rainofflower.RainofflowerRpcHandler;
 import com.yanghui.distributed.rpc.registry.Registry;
 import com.yanghui.distributed.rpc.registry.RegistryFactory;
-import com.yanghui.distributed.rpc.server.MethodInfo;
 import com.yanghui.distributed.rpc.server.Server;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -60,6 +59,9 @@ public class ProviderBootstrap<T> {
             String excludeMethodStr = providerConfig.getExclude();
             String[] excludeMethods = StringUtils.splitWithCommaOrSemicolon(excludeMethodStr);
             Map<Method, ProviderMethodConfig> methodConfigs = providerConfig.getMethodConfigs();
+            if(methodConfigs == null){
+                methodConfigs = new HashMap<>();
+            }
             nextMethod:
             for(Method method : methods){
                 String methodName = method.getName();
@@ -114,18 +116,8 @@ public class ProviderBootstrap<T> {
                 }
                 //设置执行当前方法的线程池
                 bizPipeline.setExecutor(executor);
-                Type[] parameterTypes = method.getGenericParameterTypes();
-                int paramCount = parameterTypes.length;
-                String[] paramTypes = new String[paramCount];
-                for(int i = 0; i<paramCount; i++){
-                    paramTypes[i] = parameterTypes[i].getTypeName();
-                }
-                MethodInfo methodInfo = new MethodInfo()
-                        .setMethodName(methodName)
-                        .setInterfaceName(interfaceName)
-                        .setParamTypes(paramTypes);
                 //注册当前方法业务处理的pipeline
-                server.registryBizPipeline(methodInfo, bizPipeline);
+                server.registryBizPipeline(method, bizPipeline);
             }
         }
         if(providerConfig.isRegister()){

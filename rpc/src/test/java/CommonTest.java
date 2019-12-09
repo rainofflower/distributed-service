@@ -1,5 +1,7 @@
 import com.yanghui.distributed.rpc.EchoService;
 import com.yanghui.distributed.rpc.EchoServiceImpl;
+import com.yanghui.distributed.rpc.client.ConnectionUrl;
+import com.yanghui.distributed.rpc.client.MethodProviderInfo;
 import com.yanghui.distributed.rpc.common.util.StringUtils;
 import org.junit.Test;
 
@@ -48,8 +50,21 @@ public class CommonTest {
     public void test3(){
         CommonTest commonTest = new CommonTest();
         Class<? super CommonTest> superclass = CommonTest.class.getSuperclass();
-        System.out.println(superclass.getName());
+//        System.out.println(superclass.getName());
         superclass.asSubclass(Object.class);
+
+        String host = "192.168.43.151";
+        int port = 8080;
+        MethodProviderInfo methodProviderInfo = new MethodProviderInfo().setHost(host).setPort(port).setVersion("1.0");
+        MethodProviderInfo methodProviderInfo1 = new MethodProviderInfo().setHost(host).setPort(port);
+        ConnectionUrl connectionUrl = new ConnectionUrl().setHost(host).setPort(port);
+        ConnectionUrl connectionUrl1 = new ConnectionUrl().setHost(host).setPort(port);
+
+        HashMap<ConnectionUrl, Object> map = new HashMap<>();
+        map.put(connectionUrl,2);
+        map.put(connectionUrl1,3);
+        System.out.println(ConnectionUrl.class.getName());
+        System.out.println(methodProviderInfo.getClass().getName());
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.yanghui.distributed.rpc.config.ServerConfig;
 import com.yanghui.distributed.rpc.handler.CommandHandlerPipeline;
 import io.netty.util.AttributeKey;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public interface Server{
@@ -16,9 +17,9 @@ public interface Server{
 
     void stop();
 
-    void registryBizPipeline(MethodInfo methodInfo, CommandHandlerPipeline commandHandlerPipeline);
+    void registryBizPipeline(Method methodInfo, CommandHandlerPipeline commandHandlerPipeline);
 
-    CommandHandlerPipeline getBizPipeline(MethodInfo methodInfo);
+    CommandHandlerPipeline getBizPipeline(Method methodInfo);
 
     ThreadPoolExecutor getDefaultBizThreadPool();
 

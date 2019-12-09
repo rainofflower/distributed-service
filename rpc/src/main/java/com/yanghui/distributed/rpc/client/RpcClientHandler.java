@@ -23,11 +23,14 @@ public class RpcClientHandler extends ChannelInboundHandlerAdapter {
         Rainofflower.BizResponse bizResponse = message.getBizResponse();
         String resultJson = bizResponse.getResult();
         Object result = JSONObject.parse(resultJson);
-        String id = message.getHeader().getAttachmentOrThrow(RpcConstants.REQUEST_ID);
-        InvokeFuture invokeFuture = ctx.channel().attr(Connection.CONNECTION).get().getInvokeFuture(Integer.parseInt(id));
+        String idStr = message.getHeader().getAttachmentOrThrow(RpcConstants.REQUEST_ID);
+        int id = Integer.parseInt(idStr);
+        Connection connection = ctx.channel().attr(Connection.CONNECTION).get();
+        InvokeFuture invokeFuture = connection.getInvokeFuture(id);
         //正常情况下 invokeFutureMap 里都会有 invokeFuture
         if(invokeFuture != null){
             invokeFuture.setSuccess(result);
+            connection.removeInvokeFuture(id);
             invokeFuture.cancelTimeOut();
             List<Listener> listeners = invokeFuture.getListeners();
             //根据invokerFuture中是否有listener判断是否需要回调

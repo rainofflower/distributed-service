@@ -16,6 +16,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -41,7 +42,7 @@ public class RpcServer implements Server{
 
     protected ThreadPoolExecutor defaultBizThreadPool;
 
-    protected Map<MethodInfo, CommandHandlerPipeline> bizPipelineMap = new ConcurrentHashMap<>();
+    protected Map<Method, CommandHandlerPipeline> bizPipelineMap = new ConcurrentHashMap<>();
 
     @Override
     public void init(ServerConfig serverConfig) {
@@ -98,11 +99,11 @@ public class RpcServer implements Server{
         this.channelFuture = this.bootstrap.bind(new InetSocketAddress(serverConfig.getBoundHost(), serverConfig.getPort())).syncUninterruptibly();
     }
 
-    public void registryBizPipeline(MethodInfo methodInfo, CommandHandlerPipeline commandHandlerPipeline){
+    public void registryBizPipeline(Method methodInfo, CommandHandlerPipeline commandHandlerPipeline){
         bizPipelineMap.put(methodInfo, commandHandlerPipeline);
     }
 
-    public CommandHandlerPipeline getBizPipeline(MethodInfo methodInfo){
+    public CommandHandlerPipeline getBizPipeline(Method methodInfo){
         return bizPipelineMap.get(methodInfo);
     }
 

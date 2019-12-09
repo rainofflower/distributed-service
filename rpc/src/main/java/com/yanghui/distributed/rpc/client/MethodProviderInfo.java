@@ -10,7 +10,7 @@ import java.util.Objects;
  *
  * @author YangHui
  */
-public class MethodProviderInfo extends ConnectionUrl {
+public class MethodProviderInfo {
 
     /**
      * 接口名称
@@ -26,7 +26,7 @@ public class MethodProviderInfo extends ConnectionUrl {
      * 方法描述
      * 方法名#方法参数type字符串
      */
-    protected String methodSig;
+    protected String methodSign;
 
     /**
      * 方法版本
@@ -37,6 +37,16 @@ public class MethodProviderInfo extends ConnectionUrl {
      * 方法分配的群组
      */
     protected String group;
+
+    /**
+     * The Ip.
+     */
+    protected String host;
+
+    /**
+     * The Port.
+     */
+    protected int port;
 
     /**
      * 默认序列化
@@ -130,13 +140,17 @@ public class MethodProviderInfo extends ConnectionUrl {
         return this;
     }
 
-    public String getMethodSig() {
-        return methodSig;
+    public String getMethodSign() {
+        return methodSign;
     }
 
-    public MethodProviderInfo setMethodSig(String methodSig) {
-        this.methodSig = methodSig;
+    public MethodProviderInfo setMethodSign(String methodSign) {
+        this.methodSign = methodSign;
         return this;
+    }
+
+    public String getHost(){
+        return host;
     }
 
     public MethodProviderInfo setHost(String host) {
@@ -144,9 +158,26 @@ public class MethodProviderInfo extends ConnectionUrl {
         return this;
     }
 
+    public int getPort(){
+        return port;
+    }
+
     public MethodProviderInfo setPort(int port) {
         this.port = port;
         return this;
+    }
+
+    public MethodInfo methodProviderInfo2MethodInfo(){
+        return new MethodInfo()
+                .setInterfaceName(interfaceName)
+                .setMethodSign(methodSign)
+                .setProtocol(protocol)
+                .setGroup(group)
+                .setVersion(version);
+    }
+
+    public ConnectionUrl methodProviderInfo2ConnectionUrl(){
+        return new ConnectionUrl(host, port);
     }
 
     @Override
@@ -157,7 +188,7 @@ public class MethodProviderInfo extends ConnectionUrl {
         return port == that.port &&
                 interfaceName.equals(that.interfaceName) &&
                 protocol.equals(that.protocol) &&
-                methodSig.equals(that.methodSig) &&
+                methodSign.equals(that.methodSign) &&
                 version.equals(that.version) &&
                 group.equals(that.group) &&
                 host.equals(that.host);
@@ -165,6 +196,6 @@ public class MethodProviderInfo extends ConnectionUrl {
 
     @Override
     public int hashCode() {
-        return Objects.hash(interfaceName, protocol, methodSig, version, group, host, port);
+        return Objects.hash(interfaceName, protocol, methodSign, version, group, host, port);
     }
 }

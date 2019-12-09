@@ -4,7 +4,9 @@ import com.yanghui.distributed.rpc.bootstrap.ConsumerBootstrap;
 import com.yanghui.distributed.rpc.client.router.Router;
 import com.yanghui.distributed.rpc.common.RpcConstants;
 import com.yanghui.distributed.rpc.common.util.CommonUtils;
+import com.yanghui.distributed.rpc.common.util.MethodSignBuilder;
 import com.yanghui.distributed.rpc.config.ConsumerConfig;
+import com.yanghui.distributed.rpc.config.ConsumerMethodConfig;
 import com.yanghui.distributed.rpc.context.RpcInvokeContext;
 import com.yanghui.distributed.rpc.core.Request;
 import com.yanghui.distributed.rpc.core.Response;
@@ -16,10 +18,11 @@ import com.yanghui.distributed.rpc.future.ClientCallbackExecutor;
 import com.yanghui.distributed.rpc.future.InvokeFuture;
 import com.yanghui.distributed.rpc.future.Listener;
 import com.yanghui.distributed.rpc.invoke.Invoker;
+import com.yanghui.distributed.rpc.listener.MethodProviderListener;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.Executor;
 
 import static com.yanghui.distributed.rpc.common.RpcConfigs.getBooleanValue;
 import static com.yanghui.distributed.rpc.common.RpcOptions.CONSUMER_CONNECTION_REUSE;
@@ -28,7 +31,7 @@ import static com.yanghui.distributed.rpc.common.RpcOptions.CONSUMER_CONNECTION_
  * 消费者 集群容错、服务路由
  * @author YangHui
  */
-public abstract class Cluster implements Invoker {
+public abstract class Cluster implements Invoker, MethodProviderListener {
 
     /**
      * 服务端消费者启动器
@@ -62,9 +65,16 @@ public abstract class Cluster implements Invoker {
         }else{
             consumerConnectionHolder = new AloneConsumerConnectionHolder(consumerBootstrap);
         }
-        List<MethodProviderInfo> all = consumerBootstrap.subscribe();
+        Map<MethodInfo, List<MethodProviderInfo>> all = consumerBootstrap.subscribe();
         if(CommonUtils.isNotEmpty(all)){
-            updateAllMethodProviders(all);
+            Set<Map.Entry<MethodInfo, List<MethodProviderInfo>>> entries = all.entrySet();
+            for(Map.Entry<MethodInfo, List<MethodProviderInfo>> entry : entries){
+                MethodInfo methodInfo = entry.getKey();
+                List<MethodProviderInfo> methodProviders = entry.getValue();
+                if(CommonUtils.isNotEmpty(methodProviders)){
+                    updateMethodProviders(methodInfo, methodProviders);
+                }
+            }
         }
     }
 
@@ -135,15 +145,29 @@ public abstract class Cluster implements Invoker {
             //callback
             else if(RpcConstants.INVOKER_TYPE_CALLBACK.equals(invokeType)){
                 InvokeFuture invokeFuture = invokeContext.getInvokeFuture();
-                //接口级别的listener
-                Listener responseListener = consumerConfig.getResponseListener();
+                Listener responseListener = null;
+                Executor executor = null;
+                //获取方法级别的listener
+                Map<Method, ConsumerMethodConfig> methodConfigs = consumerConfig.getMethodConfigs();
+                if(methodConfigs != null){
+                    ConsumerMethodConfig consumerMethodConfig = methodConfigs.get(request.getMethod());
+                    if(consumerMethodConfig != null){
+                        responseListener = consumerMethodConfig.getResponseListener();
+                        executor = consumerMethodConfig.getExecutor();
+                    }
+                }
+                //未设置方法级别的listener再获取接口级别的listener
                 if(responseListener == null){
-                    //获取方法级别的listener
-                    //responseListener =
+                    responseListener = consumerConfig.getResponseListener();
                 }
                 invokeFuture.addListener(responseListener);
-                //回调线程池目前设置为默认的线程池，后期可考虑可用户自己配置
-                invokeFuture.setCallbackExecutor(ClientCallbackExecutor.getInstance().getExecutor());
+                //用户未设置方法级回调线程池，设置为默认的线程池
+                if(executor == null){
+                    invokeFuture.setCallbackExecutor(ClientCallbackExecutor.getInstance().getExecutor());
+                }else{
+                    //使用用户自己配置的回调线程池
+                    invokeFuture.setCallbackExecutor(executor);
+                }
                 connection.asyncSend(request, timeout);
                 return buildEmptyResponse();
             }
@@ -173,7 +197,19 @@ public abstract class Cluster implements Invoker {
      * @return 将要调用的服务提供者
      */
     public MethodProviderInfo select(Request request){
-        Set<MethodProviderInfo> providerSet = consumerConnectionHolder.currentMethodProviderList();
+        Method method = request.getMethod();
+        String protocol = consumerConfig.getProtocol();
+        String interfaceName = consumerConfig.getInterfaceName();
+        String methodSign = MethodSignBuilder.buildMethodSign(method);
+
+        /**
+         * 由以上参数，进行路由选择
+         */
+        MethodInfo methodInfo = new MethodInfo().setInterfaceName(interfaceName)
+                .setMethodSign(methodSign).setProtocol(protocol)
+                .setGroup(RpcConstants.ADDRESS_DEFAULT_GROUP)
+                .setVersion(RpcConstants.DEFAULT_VERSION);
+        Set<MethodProviderInfo> providerSet = consumerConnectionHolder.currentMethodProviderList(methodInfo);
         if(CommonUtils.isEmpty(providerSet)){
             throw new RouteException("服务接口："+consumerConfig.getInterfaceName()+" 路由失败");
         }
@@ -183,8 +219,20 @@ public abstract class Cluster implements Invoker {
     }
 
 
-    public void updateAllMethodProviders(List<MethodProviderInfo> methodProviderInfoList) {
-        consumerConnectionHolder.updateAllMethodProviders(methodProviderInfoList);
+    public void addMethodProvider(MethodProviderInfo methodProviderInfo){
+        consumerConnectionHolder.addMethodProvider(methodProviderInfo);
+    }
+
+    public void addMethodProviders(List<MethodProviderInfo> methodProviderInfoList){
+        consumerConnectionHolder.addMethodProviders(methodProviderInfoList);
+    }
+
+    public void removeMethodProvider(MethodProviderInfo methodProviderInfo){
+        consumerConnectionHolder.removeMethodProvider(methodProviderInfo);
+    }
+
+    public void updateMethodProviders(MethodInfo methodInfo, List<MethodProviderInfo> methodProviderInfoList) {
+        consumerConnectionHolder.updateMethodProviders(methodInfo, methodProviderInfoList);
     }
 
     public ConsumerBootstrap getConsumerBootstrap() {

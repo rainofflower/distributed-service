@@ -20,7 +20,7 @@ public class FailoverCluster extends Cluster {
      */
     @Override
     public Response doInvoke(Request request) throws RpcException {
-        MethodProviderInfo connectionUrl = select(request);
-        return sendMsg(connectionUrl, request);
+        MethodProviderInfo methodProviderInfo = select(request);
+        return sendMsg(methodProviderInfo, request);
     }
 }

@@ -1,16 +1,14 @@
 package com.yanghui.distributed.rpc.common.cache;
 
+import com.yanghui.distributed.rpc.common.util.MethodSignBuilder;
+
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import static com.yanghui.distributed.rpc.common.util.StringUtils.METHOD_TYPE_SEP;
-
 /**
  * 反射缓存
  *
@@ -45,13 +43,7 @@ public final class ReflectCache {
                 cache = old;
             }
         }
-        StringBuilder methodSigs = new StringBuilder(128);
-        String methodName = method.getName();
-        methodSigs.append(methodName).append(METHOD_TYPE_SEP);
-        for(Type paramType : method.getGenericParameterTypes()){
-            methodSigs.append(paramType.getTypeName());
-        }
-        cache.putIfAbsent(methodSigs.toString(), method);
+        cache.putIfAbsent(MethodSignBuilder.buildMethodSign(method), method);
     }
 
 
@@ -67,12 +59,7 @@ public final class ReflectCache {
         if(cache == null){
             return null;
         }
-        StringBuilder methodSigs = new StringBuilder(128);
-        methodSigs.append(methodName).append(METHOD_TYPE_SEP);
-        for(String paramType : paramTypes){
-            methodSigs.append(paramType);
-        }
-        return cache.get(methodSigs.toString());
+        return cache.get(MethodSignBuilder.buildMethodSign(methodName, paramTypes));
     }
 
     public static Map<String, Method> getInterfaceMethodMap(String interfaceName){

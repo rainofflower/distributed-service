@@ -1,14 +1,16 @@
 package com.yanghui.distributed.rpc.server.handler;
 
 import com.google.protobuf.ProtocolStringList;
+import com.yanghui.distributed.rpc.common.cache.ReflectCache;
 import com.yanghui.distributed.rpc.core.exception.ErrorType;
 import com.yanghui.distributed.rpc.core.exception.RpcException;
 import com.yanghui.distributed.rpc.handler.CommandHandlerPipeline;
 import com.yanghui.distributed.rpc.protocol.rainofflower.Rainofflower;
-import com.yanghui.distributed.rpc.server.MethodInfo;
 import com.yanghui.distributed.rpc.server.Server;
 import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
+
+import java.lang.reflect.Method;
 
 /**
  * 将请求转发到对应的pipeline中处理
@@ -39,12 +41,9 @@ public class RpcServerDispatchHandler extends ChannelInboundHandlerAdapter {
                 paramTypes[i] = paramTypesList.get(i);
             }
         }
-        MethodInfo methodInfo = new MethodInfo()
-                .setInterfaceName(interfaceName)
-                .setMethodName(methodName)
-                .setParamTypes(paramTypes);
+        Method method = ReflectCache.getMethodCache(interfaceName, methodName, paramTypes);
         //找到当前方法的pipeline并触发链式调用
-        CommandHandlerPipeline bizPipeline = server.getBizPipeline(methodInfo);
+        CommandHandlerPipeline bizPipeline = server.getBizPipeline(method);
         if(bizPipeline == null){
             throw new RpcException(ErrorType.SERVER_NOT_FOUND_PROVIDER,"未找到服务提供者！");
         }

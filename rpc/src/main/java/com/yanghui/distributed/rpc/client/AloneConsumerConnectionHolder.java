@@ -5,6 +5,7 @@ import com.yanghui.distributed.rpc.common.SystemInfo;
 import com.yanghui.distributed.rpc.common.struct.ListDifference;
 import com.yanghui.distributed.rpc.common.struct.NamedThreadFactory;
 import com.yanghui.distributed.rpc.common.util.CommonUtils;
+import com.yanghui.distributed.rpc.core.exception.RpcRuntimeException;
 import com.yanghui.distributed.rpc.transport.ConnectionManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,20 +27,39 @@ public class AloneConsumerConnectionHolder extends AbstractConsumerConnectionHol
         super(consumerBootstrap);
     }
 
+    /**
+     * 每一个服务提供的方法建立一个连接
+     * @param methodProviderInfo
+     */
     protected void addConnection(MethodProviderInfo methodProviderInfo){
-        Connection connection = ConnectionManager.addConnection(methodProviderInfo);
+        String host = methodProviderInfo.getHost();
+        int port = methodProviderInfo.getPort();
+        Connection connection = ConnectionManager.addConnection(methodProviderInfo.methodProviderInfo2ConnectionUrl());
         if(!connection.isFine()){
-            return;
+            throw new RpcRuntimeException("建立连接失败，host:port "+host+":"+port);
         }else{
-            connections.put(methodProviderInfo, connection);
+            MethodInfo methodInfo = methodProviderInfo.methodProviderInfo2MethodInfo();
+            ConcurrentMap<MethodProviderInfo, Connection> map = connections.get(methodInfo);
+            if(map == null){
+                map = new ConcurrentHashMap<>();
+                ConcurrentMap<MethodProviderInfo, Connection> old = connections.putIfAbsent(methodInfo, map);
+                if(old != null){
+                    map = old;
+                }
+            }
+            map.putIfAbsent(methodProviderInfo, connection);
         }
     }
 
-    public void updateAllMethodProviders(List<MethodProviderInfo> methodProviderInfos){
+    public void updateMethodProviders(MethodInfo methodInfo, List<MethodProviderInfo> methodProviderInfos){
         try {
-            Collection<MethodProviderInfo> nowAll = currentMethodProviderList();
-            List<MethodProviderInfo> nowAllP = new ArrayList<>(nowAll);// 当前全部
-
+            Collection<MethodProviderInfo> nowAll = currentMethodProviderList(methodInfo);
+            List<MethodProviderInfo> nowAllP;
+            if(CommonUtils.isEmpty(nowAll)){
+                nowAllP = new ArrayList<>();
+            }else{
+                nowAllP = new ArrayList<>(nowAll);// 当前全部
+            }
             // 比较当前的和最新的
             ListDifference<MethodProviderInfo> diff = new ListDifference<>(methodProviderInfos, nowAllP);
             List<MethodProviderInfo> needAdd = diff.getOnlyOnLeft(); // 需要新建
@@ -58,34 +78,10 @@ public class AloneConsumerConnectionHolder extends AbstractConsumerConnectionHol
     }
 
     /**
-     * 待实现
-     * 更新提供者群组列表
-     * @param methodProviderGroups
-     */
-    public void updateAllMethodProviderGroups(List<MethodProviderGroup> methodProviderGroups) {
-//        List<MethodProviderInfo> mergePs = new ArrayList<>();
-//        if (CommonUtils.isNotEmpty(methodProviderGroups)) {
-//            for (MethodProviderGroup methodProviderGroup : methodProviderGroups) {
-//                mergePs.addAll(methodProviderGroup.getMethodProviderInfos());
-//            }
-//        }
-//        updateProviders(new ProviderGroup().addAll(mergePs));
-    }
-
-    /**
-     * 待实现
-     * @param methodProviderGroup
-     */
-    public void updateMethodProviderGroup(MethodProviderGroup methodProviderGroup) {
-
-    }
-
-    /**
      * 为了快速建立连接，会创建临时线程池，
      * 创建完成或者超时会关闭线程池
-     * @param methodProviderInfoList
      */
-    protected void addMethodProviders(List<MethodProviderInfo> methodProviderInfoList){
+    public void addMethodProviders(List<MethodProviderInfo> methodProviderInfoList){
         String interfaceName = consumerConfig.getInterfaceName();
         int providerSize = methodProviderInfoList.size();
         if(providerSize > 0) {
@@ -123,7 +119,7 @@ public class AloneConsumerConnectionHolder extends AbstractConsumerConnectionHol
      * 当前线程建立连接
      * @param methodProviderInfo
      */
-    protected void addMethodProvider(MethodProviderInfo methodProviderInfo){
+    public void addMethodProvider(MethodProviderInfo methodProviderInfo){
         addConnection(methodProviderInfo);
     }
 
@@ -131,7 +127,7 @@ public class AloneConsumerConnectionHolder extends AbstractConsumerConnectionHol
      * 当前线程关闭多个连接
      * @param methodProviderInfoList
      */
-    protected void removeMethodProviders(List<MethodProviderInfo> methodProviderInfoList){
+    public void removeMethodProviders(List<MethodProviderInfo> methodProviderInfoList){
         if(CommonUtils.isNotEmpty(methodProviderInfoList)){
             for(MethodProviderInfo methodProviderInfo : methodProviderInfoList){
                 removeMethodProvider(methodProviderInfo);
@@ -143,37 +139,40 @@ public class AloneConsumerConnectionHolder extends AbstractConsumerConnectionHol
      * 移除并关闭连接
      * @param methodProviderInfo
      */
-    protected void removeMethodProvider(MethodProviderInfo methodProviderInfo){
+    public void removeMethodProvider(MethodProviderInfo methodProviderInfo){
         String interfaceName = consumerConfig.getInterfaceName();
         int disconnectTimeout = consumerConfig.getDisconnectTimeout();
-        Connection con = connections.get(methodProviderInfo);
-        if(con != null){
-            try {
-                if(disconnectTimeout > 0){
-                    //还在处理的请求数
-                    int count = con.currentRequests();
-                    if(count > 0){
-                        long start = System.currentTimeMillis();
-                        //等请求处理完或者超时
-                        while(con.currentRequests() > 0 &&
-                                System.currentTimeMillis() - start < disconnectTimeout){
-                            try {
-                                Thread.sleep(10);
-                            }catch (InterruptedException e){
-                                //忽略
+        ConcurrentMap<MethodProviderInfo, Connection> map = connections.get(methodProviderInfo.methodProviderInfo2MethodInfo());
+        if(map != null){
+            Connection con = map.get(methodProviderInfo);
+            if(con != null){
+                try {
+                    if(disconnectTimeout > 0){
+                        //还在处理的请求数
+                        int count = con.currentRequests();
+                        if(count > 0){
+                            long start = System.currentTimeMillis();
+                            //等请求处理完或者超时
+                            while(con.currentRequests() > 0 &&
+                                    System.currentTimeMillis() - start < disconnectTimeout){
+                                try {
+                                    Thread.sleep(10);
+                                }catch (InterruptedException e){
+                                    //忽略
+                                }
                             }
                         }
                     }
+                    int count = con.currentRequests();
+                    if(count > 0){
+                        //关闭前还有正在处理的请求
+                        log.warn("即将关闭连接，但是还有 {} 个请求还未处理完",count);
+                    }
+                    con.disconnect();
+                    connections.remove(methodProviderInfo);
+                }catch (Exception e){
+                    log.error("移除连接失败，服务提供者：{}，异常：",interfaceName,e);
                 }
-                int count = con.currentRequests();
-                if(count > 0){
-                    //关闭前还有正在处理的请求
-                    log.warn("即将关闭连接，但是还有 {} 个请求还未处理完",count);
-                }
-                con.disconnect();
-                connections.remove(methodProviderInfo);
-            }catch (Exception e){
-                log.error("移除连接失败，服务提供者：{}，异常：",interfaceName,e);
             }
         }
     }

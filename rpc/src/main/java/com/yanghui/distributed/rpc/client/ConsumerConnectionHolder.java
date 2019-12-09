@@ -10,27 +10,54 @@ import java.util.Set;
  */
 public interface ConsumerConnectionHolder {
 
+    /**
+     * 获取具体方法提供者的连接
+     * @param methodProviderInfo
+     * @return
+     */
     Connection getConnection(MethodProviderInfo methodProviderInfo);
 
-    Set<MethodProviderInfo> currentMethodProviderList();
-
-    List<Connection> currentConnectionList();
+    /**
+     * 当前某个方法的提供者列表
+     * @param methodInfo
+     * @return
+     */
+    Set<MethodProviderInfo> currentMethodProviderList(MethodInfo methodInfo);
 
     /**
-     * 更新所有的服务提供者
+     * 当前某个方法的提供者连接列表
+     * @param methodInfo
+     * @return
+     */
+    List<Connection> currentConnectionList(MethodInfo methodInfo);
+
+    /**
+     * 新增一个方法提供者
+     * @param methodProviderInfo
+     */
+    void addMethodProvider(MethodProviderInfo methodProviderInfo);
+
+    /**
+     * 单个连接的关闭并移除
+     * @param methodProviderInfo
+     */
+    void removeMethodProvider(MethodProviderInfo methodProviderInfo);
+
+    /**
+     * 批量新增方法提供者
      * @param methodProviderInfos
      */
-    void updateAllMethodProviders(List<MethodProviderInfo> methodProviderInfos);
+    void addMethodProviders(List<MethodProviderInfo> methodProviderInfos);
 
     /**
-     * 更新所有的提供者群组
-     * @param methodProviderGroups
+     * 批量移除方法提供者
+     * @param methodProviderInfoList
      */
-    void updateAllMethodProviderGroups(List<MethodProviderGroup> methodProviderGroups);
+    void removeMethodProviders(List<MethodProviderInfo> methodProviderInfoList);
 
     /**
-     * 更新提供者群组
-     * @param methodProviderGroup
+     * 批量更新某个方法的服务提供者
      */
-    void updateMethodProviderGroup(MethodProviderGroup methodProviderGroup);
+    void updateMethodProviders(MethodInfo methodInfo, List<MethodProviderInfo> methodProviderInfos);
+
 }

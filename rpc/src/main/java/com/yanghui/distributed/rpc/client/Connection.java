@@ -47,7 +47,7 @@ public class Connection {
     /**
      * io线程池，消费者所有连接共用（当有大量连接时，每个都分配线程池资源将耗尽）
      */
-    public static final EventLoopGroup EVENT_EXECUTORS = new NioEventLoopGroup(Math.max(SystemInfo.CORES, getIntValue(CONSUMER_CONNECTION_THREADS)));
+    protected static final EventLoopGroup EVENT_EXECUTORS = new NioEventLoopGroup(Math.max(SystemInfo.CORES, getIntValue(CONSUMER_CONNECTION_THREADS)));
 
     /**
      * 连接信息
@@ -208,13 +208,6 @@ public class Connection {
             connection.putInvokeFuture(invokeFuture.getInvokeId(), invokeFuture);
             ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("future-requestId-" + request.getId() + "-timeout-monitor"));
             invokeFuture.setScheduleExecutor(executor);
-            executor.schedule(()->{
-                InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
-                if(f != null){
-                    f.cancelTimeOut();
-                    f.setFailure(new RpcException(ErrorType.CLIENT_TIMEOUT, "获取结果超时"));
-                }
-            }, timeout, TimeUnit.MILLISECONDS);
             channel.writeAndFlush(request.getMessage()).addListener((ChannelFuture future) -> {
                 //发送失败
                 if (!future.isSuccess()) {
@@ -229,6 +222,13 @@ public class Connection {
                     }
                 }
             });
+            executor.schedule(()->{
+                InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
+                if(f != null){
+                    f.cancelTimeOut();
+                    f.setFailure(new RpcException(ErrorType.CLIENT_TIMEOUT, "获取结果超时"));
+                }
+            }, timeout, TimeUnit.MILLISECONDS);
         }catch (Exception e) {
             InvokeFuture f = connection.removeInvokeFuture(invokeFuture.getInvokeId());
             if (f != null) {

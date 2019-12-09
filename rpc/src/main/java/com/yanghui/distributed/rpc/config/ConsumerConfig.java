@@ -1,14 +1,17 @@
 package com.yanghui.distributed.rpc.config;
 
 import com.yanghui.distributed.rpc.bootstrap.ConsumerBootstrap;
+import com.yanghui.distributed.rpc.client.MethodInfo;
 import com.yanghui.distributed.rpc.client.router.Router;
 import com.yanghui.distributed.rpc.future.Listener;
+import com.yanghui.distributed.rpc.listener.MethodProviderListener;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.yanghui.distributed.rpc.common.RpcConfigs.*;
@@ -35,6 +38,12 @@ public class ConsumerConfig<T> extends AbstractInterfaceConfig<T,ConsumerConfig<
      * 具体方法配置
      */
     private Map<Method, ConsumerMethodConfig>     methodConfigs;
+
+
+    /**
+     * 方法->方法提供者变更监听者
+     */
+    private ConcurrentMap<MethodInfo, MethodProviderListener>  methodProviderListenerMap;
 
 
     /**
@@ -181,7 +190,7 @@ public class ConsumerConfig<T> extends AbstractInterfaceConfig<T,ConsumerConfig<
     protected transient ThreadPoolExecutor          executor;
 
     /**
-     * 回调模式 接口级别 返回结果listener
+     * 回调模式 返回结果listener
      */
     protected Listener                              responseListener;
 
@@ -745,6 +754,19 @@ public class ConsumerConfig<T> extends AbstractInterfaceConfig<T,ConsumerConfig<
      */
     public ConsumerConfig<T> setExecutor(ThreadPoolExecutor executor) {
         this.executor = executor;
+        return this;
+    }
+
+    public ConsumerBootstrap<T> getConsumerBootstrap(){
+        return consumerBootstrap;
+    }
+
+    public ConcurrentMap<MethodInfo, MethodProviderListener> getMethodProviderListenerMap(){
+        return methodProviderListenerMap;
+    }
+
+    public ConsumerConfig<T> setMethodProviderListenerMap(ConcurrentMap<MethodInfo, MethodProviderListener> methodProviderListenerMap){
+        this.methodProviderListenerMap = methodProviderListenerMap;
         return this;
     }
 

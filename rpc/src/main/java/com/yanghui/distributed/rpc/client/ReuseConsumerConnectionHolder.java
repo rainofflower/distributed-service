@@ -21,38 +21,29 @@ public class ReuseConsumerConnectionHolder extends AbstractConsumerConnectionHol
 
     }
 
+
     @Override
-    public void updateAllMethodProviders(List<MethodProviderInfo> methodProviderInfos) {
+    public void addMethodProvider(MethodProviderInfo methodProviderInfo) {
 
     }
 
     @Override
-    public void updateAllMethodProviderGroups(List<MethodProviderGroup> methodProviderGroups) {
+    public void removeMethodProvider(MethodProviderInfo methodProviderInfo) {
 
     }
 
     @Override
-    public void updateMethodProviderGroup(MethodProviderGroup methodProviderGroup) {
+    public void addMethodProviders(List<MethodProviderInfo> methodProviderInfos) {
 
     }
 
     @Override
-    protected void addMethodProviders(List<MethodProviderInfo> methodProviderInfoList) {
+    public void removeMethodProviders(List<MethodProviderInfo> methodProviderInfoList) {
 
     }
 
     @Override
-    protected void addMethodProvider(MethodProviderInfo methodProviderInfo) {
-
-    }
-
-    @Override
-    protected void removeMethodProviders(List<MethodProviderInfo> methodProviderInfoList) {
-
-    }
-
-    @Override
-    protected void removeMethodProvider(MethodProviderInfo methodProviderInfo) {
+    public void updateMethodProviders(MethodInfo methodInfo, List<MethodProviderInfo> methodProviderInfos) {
 
     }
 }

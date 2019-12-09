@@ -16,11 +16,6 @@ public class InvokeFuture extends DefaultPromise {
      */
     private ThreadPoolExecutor scheduleExecutor;
 
-    /**
-     * 回调模式 调用级别 回调listener
-     */
-    private Listener responseListener;
-
     private AtomicBoolean callbackFlag = new AtomicBoolean(false);
 
     public InvokeFuture(int invokeId){
@@ -56,14 +51,5 @@ public class InvokeFuture extends DefaultPromise {
 
     public void setScheduleExecutor(ThreadPoolExecutor scheduleExecutor) {
         this.scheduleExecutor = scheduleExecutor;
-    }
-
-    public Listener getResponseListener() {
-        return responseListener;
-    }
-
-    public InvokeFuture setResponseListener(Listener responseListener) {
-        this.responseListener = responseListener;
-        return this;
     }
 }
