@@ -115,21 +115,28 @@ public class RedissonLockTest {
     }
 
     /**
-     * 集群模式测试失败  bucket.get() 总是返回 null
+     * 集群模式测试成功
+     * 从节点需要加上主节点的密码（masterauth 888888），否则连接无法主节点，自然也就无法复制主节点的数据
      * @throws InterruptedException
      */
     @Test
     public void test3() throws InterruptedException {
         Config config = new Config();
         config.useClusterServers()
-                .addNodeAddress("redis://node-1:7001","redis://node-1:7002","redis://node-1:7003",
-                        "redis://node-1:7004","redis://node-1:7005","redis://node-1:7006")
+                .addNodeAddress("redis://node-1:7001","redis://node-1:7002","redis://node-1:7003")
                 .setPassword("888888");
         RedissonClient redisson = Redisson.create(config);
-        RBucket<String> bucket = redisson.getBucket("key2",StringCodec.INSTANCE);
-        bucket.set("kfc");
-        System.out.println(bucket.get());
-        log.info("----"+bucket.get());
+        RBucket<String> bucket = redisson.getBucket("key03",StringCodec.INSTANCE);
+        String str = "haha";
+        bucket.set(str);
+        String val = bucket.get();
+        System.out.println("---"+bucket.get());
+
+
+        System.out.println("---"+bucket.get());
+        System.out.println("---"+bucket.get());
+        System.out.println("---"+bucket.get());
+        Assert.assertEquals("获取值失败",str,val);
         /*CountDownLatch latch = new CountDownLatch(fixNum);
         ExecutorService pool = Executors.newFixedThreadPool(10);
         for(int i= 0; i<fixNum; i++){
